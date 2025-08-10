@@ -1,19 +1,19 @@
-<!SGA html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Assembleias">
+    <title>Sistema de Gestão de Assembleias</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icons/icon-512x512.png">
-    <link rel="apple-touch-icon" href="icons/icon-512x512.png">
+    <meta name="theme-color" content="#003366">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <title>Sistema de Gestão de Assembleias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://unpkg.com/dexie@3.2.2/dist/dexie.js"></script>
     <style>
+
         :root {
             --primary: #003366;
             --secondary: #4a86e8;
@@ -132,12 +132,18 @@
             background: #e0a800;
         }
 
-         .main-content {
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
-   	
-	}
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
 
         .card {
             background: white;
@@ -281,6 +287,7 @@
             margin-top: 15px;
         }
 
+        /* Gantt Section */
         .gantt-container {
             display: flex;
             flex-direction: column;
@@ -410,6 +417,7 @@
             text-decoration: underline;
         }
 
+        /* Calendar Section */
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -578,6 +586,7 @@
             border: 1px dashed #d0d9e7;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
@@ -618,57 +627,7 @@
             }
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            
-            header {
-                flex-direction: column;
-                padding: 10px;
-            }
-            
-            .controls {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .btn {
-                width: 100%;
-                margin-bottom: 8px;
-            }
-            
-            .stats-container {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .card {
-                padding: 15px;
-            }
-            
-            table {
-                font-size: 12px;
-            }
-            
-            th, td {
-                padding: 8px;
-            }
-            
-            .modal-content {
-                width: 95%;
-                padding: 15px;
-            }
-            
-            .form-control {
-                padding: 10px;
-                font-size: 16px;
-            }
-            
-            .pautas-container {
-                max-height: 200px;
-            }
-        }
-
+        /* Tabela de Agendamentos do Mês */
         .table-container {
             margin-top: 20px;
             overflow-x: auto;
@@ -731,6 +690,7 @@
             padding: 15px !important;
         }
 
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -778,6 +738,7 @@
             color: var(--danger);
         }
 
+        /* Histórico */
         .history-item {
             padding: 15px;
             margin-bottom: 15px;
@@ -797,6 +758,7 @@
             white-space: pre-wrap;
         }
 
+        /* Dashboard Stats */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -835,6 +797,7 @@
             font-size: 14px;
         }
         
+        /* Alert Modal */
         .alert-modal {
             display: none;
             position: fixed;
@@ -882,6 +845,7 @@
             font-size: 16px;
         }
 
+        /* Gerenciamento de Condomínios */
         .condominio-item {
             display: flex;
             justify-content: space-between;
@@ -918,6 +882,7 @@
             margin-top: 5px;
         }
         
+        /* Modal de Síndicos */
         .modal-sindicos {
             background: white;
             border-radius: 12px;
@@ -951,6 +916,7 @@
             color: #666;
         }
 
+        /* Modal de Detalhes da Assembleia */
         .assembly-modal-content {
             background: white;
             padding: 30px;
@@ -972,6 +938,7 @@
             color: white;
         }
         
+        /* Etapas selecionáveis */
         .phase-selector {
             display: flex;
             flex-wrap: wrap;
@@ -996,6 +963,7 @@
             color: white;
         }
         
+        /* Abas */
         .tabs {
             display: flex;
             border-bottom: 1px solid #ddd;
@@ -1028,10 +996,12 @@
             display: block;
         }
         
+        /* Ícones de status */
         .status-icon {
             margin-right: 5px;
         }
 
+        /* Progresso */
         .progress-container {
             margin-top: 15px;
             padding: 15px;
@@ -1056,6 +1026,7 @@
             width: 0%;
         }
 
+        /* Melhorias para botões no modal de atas */
         .modal-btn-group {
             display: flex;
             gap: 12px;
@@ -1063,6 +1034,7 @@
             justify-content: flex-end;
         }
 
+	/* Adicionar estilo para tooltip de mandato */
         .mandato-tooltip {
             position: absolute;
             background: white;
@@ -1073,227 +1045,471 @@
             z-index: 1000;
             max-width: 300px;
         }
-        
-        .condominio-details {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
-            max-width: 500px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .condominio-header {
-            background: linear-gradient(135deg, #2c3e50, #1a2530);
-            color: white;
-            padding: 20px;
-            position: relative;
-            text-align: center;
-        }
-
-        .condominio-header h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.6rem;
-            font-weight: 600;
-        }   
-
-        .status-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .status-badge.active {
-            background-color: #27ae60;
-            color: white;
-        }
-
-        .status-badge.inactive {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .condominio-info {
-            padding: 20px;
-        }
-
-        .info-card {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .info-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-        }
-
-        .info-icon {
-            font-size: 1.8rem;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #eef2f7;
-            border-radius: 50%;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #7f8c8d;
-            font-size: 0.95rem;
-            margin-bottom: 3px;
-        }
-
-        .info-value {
-            font-weight: 500;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-
-        .mandato-section {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px dashed #e0e0e0;
-        }
-
-        .section-title {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .mandato-period {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .period-card {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            background: #edf7ff;
-            border-radius: 10px;
-            border: 1px solid #d0e8ff;
-            text-align: center;
-        }
-
-        .period-icon {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: #3498db;
-        }
-
-        .period-label {
-            font-weight: 500;
-            color: #7f8c8d;
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-        }
-
-        .period-value {
-            font-weight: 700;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-
-        .period-divider {
-            color: #95a5a6;
-            font-size: 1.5rem;
-            padding: 0 5px;
-        }
-
-        .fim-mandato-container {
-            margin-top: 5px;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .fim-mandato-item {
-            padding: 8px;
-            margin-bottom: 5px;
-            background: #fff8f8;
-            border-left: 3px solid #e53935;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .fim-mandato-item:hover {
-            background: #ffebee;
-            transform: translateX(2px);
-        }
-
-        .fim-mandato-header {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #e53935;
-            font-size: 10px;
-            margin-bottom: 5px;
-        }
-
-        .fim-mandato-header i {
-            font-size: 10px;
-        }
-
-        .fim-mandato-body {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .condominio-nome {
-            font-weight: 600;
-            font-size: 8px;
-            color: #333;
-            white-space: normal;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .fim-mandato-footer {
-            margin-top: 4px;
-            font-size: 11px;
-            color: #777;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-	input:invalid {
-    	border-color: #dc3545;
+	
+	/* Adicionar estilo para details condominio */	
+	.condominio-details {
+    	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    	color: #333;
+    	max-width: 500px;
+    	background: white;
+    	border-radius: 12px;
+    	overflow: hidden;
+    	box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 	
 	}
 
-	input:valid {
-    	border-color: #28a745;
+	.condominio-header {
+    	background: linear-gradient(135deg, #2c3e50, #1a2530);
+    	color: white;
+   	padding: 20px;
+    	position: relative;
+    	text-align: center;
+	
+	}
+
+	.condominio-header h2 {
+    	margin: 0 0 10px 0;
+    	font-size: 1.6rem;
+    	font-weight: 600;
+	
+	}	
+	
+	
+	.status-badge {
+    	position: absolute;
+    	top: 15px;
+    	right: 15px;
+    	padding: 5px 12px;
+    	border-radius: 20px;
+    	font-size: 0.85rem;
+    	font-weight: 600;
+	
+	}
+
+	.status-badge.active {
+    	background-color: #27ae60;
+	color: white;
+	
+	}
+
+	.status-badge.inactive {
+    	background-color: #e74c3c;
+    	color: white;
+	
+	}
+
+	.condominio-info {
+    	padding: 20px;
 
 	}
 
-	@media (max-width: 768px) {
-            input[type="tel"] {
-                font-size: 16px;
-                padding: 12px 15px;
-                margin-top: 8px;
-            }
-        
+	.info-card {
+    	display: flex;
+    	align-items: center;
+    	gap: 15px;
+    	padding: 15px;
+    	margin-bottom: 15px;
+    	background: #f8f9fa;
+    	border-radius: 10px;
+    	transition: transform 0.3s ease;
+	
+	}
+
+	.info-card:hover {
+    	transform: translateY(-3px);
+    	box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+	
+	}
+
+	.info-icon {
+    	font-size: 1.8rem;
+    	width: 50px;
+    	height: 50px;
+    	display: flex;
+    	align-items: center;
+    	justify-content: center;
+    	background: #eef2f7;
+    	border-radius: 50%;
+
+	}
+
+	.info-label {
+   	font-weight: 600;
+    	color: #7f8c8d;
+    	font-size: 0.95rem;
+    	margin-bottom: 3px;
+	
+	}
+
+	.info-value {
+    	font-weight: 500;
+    	color: #2c3e50;
+    	font-size: 1.1rem;
+	
+	}
+
+	.mandato-section {
+    	margin-top: 25px;
+    	padding-top: 20px;
+    	border-top: 1px dashed #e0e0e0;
+
+	}
+
+	.section-title {
+   	font-weight: 600;
+   	color: #2c3e50;
+    	font-size: 1.2rem;
+    	margin-bottom: 15px;
+    	text-align: center;
+
+	}
+
+	.mandato-period {
+    	display: flex;
+    	justify-content: space-between;
+    	align-items: center;
+    	gap: 15px;
+	
+	}
+
+	.period-card {
+    	flex: 1;
+    	display: flex;
+    	flex-direction: column;
+    	align-items: center;
+    	padding: 15px;
+    	background: #edf7ff;
+    	border-radius: 10px;
+    	border: 1px solid #d0e8ff;
+    	text-align: center;
+
+	}
+
+	.period-icon {
+    	font-size: 1.8rem;
+    	margin-bottom: 10px;
+    	color: #3498db;
+
+	}
+
+	.period-label {
+    	font-weight: 500;
+    	color: #7f8c8d;
+    	font-size: 0.95rem;
+   	margin-bottom: 5px;
+	
+	}
+
+	.period-value {
+    	font-weight: 700;
+    	color: #2c3e50;
+    	font-size: 1.1rem;
+
+	}
+
+	.period-divider {
+    	color: #95a5a6;
+    	font-size: 1.5rem;
+    	padding: 0 5px;
+	
+	};
+document.head.appendChild(style);
+
+
+	/* Fim Mandato */	
+
+	.fim-mandato-container {
+    margin-top: 5px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.fim-mandato-item {
+    padding: 8px;
+    margin-bottom: 5px;
+    background: #fff8f8;
+    border-left: 3px solid #e53935;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fim-mandato-item:hover {
+    background: #ffebee;
+    transform: translateX(2px);
+}
+
+.fim-mandato-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #e53935;
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.fim-mandato-header i {
+    font-size: 10px;
+}
+
+.fim-mandato-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.condominio-nome {
+    font-weight: 600;
+    font-size: 8px;
+    color: #333;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.fim-mandato-footer {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #777;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Caixa geral da assembleia */
+/* Caixa geral */
+.detalhes-assembleia {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    margin: 15px 0;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* para borda arredondada no título */
+}
+
+/* Cabeçalho da caixa */
+.detalhes-assembleia-header {
+    background: #0056b3;
+    color: white;
+    padding: 8px 12px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* Corpo da caixa */
+.detalhes-assembleia-body {
+    padding: 15px 20px;
+}
+
+.detalhes-assembleia-body p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.detalhes-assembleia-body strong {
+    color: #000;
+}
+
+/* Lista de pautas */
+.pauta-box {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.pauta-titulo {
+    font-weight: bold;
+    color: #0056b3;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.pauta-descricao {
+    font-size: 13px;
+    color: #555;
+}
+
+/* ESTILOS PARA VISUALIZAÇÃO */
+.styled-alert {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 500px;
+    overflow: hidden;
+    animation: popIn 0.3s ease-out;
+}
+
+.alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.alert-header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.alert-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.close-alert {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 15px;
+}
+
+.alert-body {
+    padding: 20px;
+}
+
+.condominio-view {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.view-header h3 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+/* ESTILOS ESSENCIAIS */
+.condominio-view {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    width: 100%;
+}
+
+.view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.view-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.4rem;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    width: 100px;
+    min-width: 100px;
+    color: #7f8c8d;
+}
+
+.detail-value {
+    flex: 1;
+}
+
+/* Adicionar ao final dos estilos existentes */
+
+/* Estilos para ícones de data */
+.date-icon {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.date-row {
+    display: flex;
+    align-items: center;
+}
+
+.date-separator {
+    margin: 0 8px;
+    color: #95a5a6;
+}
+
+/* Ajuste para o badge ao lado do CNPJ */
+.detail-value .status-badge {
+    margin-left: 10px;
+    vertical-align: middle;
+    font-size: 0.8em;
+    padding: 3px 8px;
+}
+
+/* Manter os estilos originais do badge */
+.status-badge {
+    display: inline-block;
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.status-ativo {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-inativo {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+
+/* REMOVA ou SOBRESCREVA estilos existentes */
+.status-badge {
+    position: static !important; /* Remove o absolute */
+    top: auto !important;
+    right: auto !important;
+    margin-left: 10px; /* Espaço entre CNPJ e status */
+    display: inline-block; /* Permite ficar na mesma linha */
+}
+
+/* Estilo específico para badges inline */
+.inline-badge {
+    vertical-align: middle;
+    transform: none !important;
+}
 
     </style>
 </head>
@@ -1302,7 +1518,7 @@
         <!-- Header -->
         <header>
             <div class="logo">
-                <i class="fas fa-calendar-days"></i> 
+	<i class="fas fa-calendar-days"></i> 
                 <h1>AGENDAMENTOS - <span>ASSEMBLEIAS</span></h1>
             </div>
             <div class="controls">
@@ -1315,7 +1531,7 @@
             </div>
         </header>
 
-        <!-- Dashboard Stats -->
+        <!-- Dashboard Stats (Agora por mês) -->
         <div class="stats-container">
             <div class="stat-card">
                 <i class="fas fa-calendar-check fa-2x" style="color: var(--primary);"></i>
@@ -1339,18 +1555,18 @@
             </div>
         </div>
 
-      <div class="main-content">
-    <!-- Agenda Section -->
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Agendar Assembleia</h2>
-        </div>
-        <div class="card-body">
-
+        <div class="main-content">
+            <!-- Agenda Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Agendar Assembleia</h2>
+                </div>
+                <div class="card-body">
                     <div class="form-group">
                         <label for="condominio">Condomínio</label>
                         <select id="condominio" class="form-control" required>
                             <option value="">Selecione o condomínio</option>
+                            <!-- Os condomínios serão carregados dinamicamente -->
                         </select>
                     </div>
 
@@ -1369,7 +1585,7 @@
                         <select id="local" class="form-control" required>
                             <option value="">Selecione o formato</option>
                             <option>Presencial</option>
-                            <optio>Virtual</option>
+                            <option>Virtual</option>
                             <option>Híbrida</option>
                         </select>
                     </div>
@@ -1386,13 +1602,13 @@
 
                     <div class="form-group">
                         <label for="responsavel">Responsável</label>
-                        <input type="text" id="responsavel" class="form-control" placeholder="Responsável pela Assembleia"required>
+                        <input type="text" id="responsavel" class="form-control" placeholder="Nome do responsável" required>
                     </div>
 
                     <div class="form-group">
                         <label>Pautas (máximo 10)</label>
                         <div class="pautas-container" id="pautasContainer">
-                            <!-- Pautas serão adicionadas dinamicamente -->
+                            <!-- Apenas uma pauta inicial -->
                         </div>
                         <button class="btn btn-accent" id="addPautaBtn">
                             <i class="fas fa-plus"></i> Adicionar Pauta
@@ -1410,19 +1626,17 @@
                 </div>
             </div>
 
-                <!-- Gantt Section -->
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Acompanhamento de Registro de Atas</h2>
-            <button class="btn btn-secondary" id="showHistoryBtn">
-                <i class="fas fa-history"></i> Histórico
-            </button>
-        </div>
-        <div class="card-body">
+            <!-- Gantt Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Acompanhamento de Registro de Atas</h2>
+                    <button class="btn btn-secondary" id="showHistoryBtn">
+                        <i class="fas fa-history"></i> Histórico
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="gantt-container" id="ganttContainer">
-                        <!-- Gantt será preenchido dinamicamente -->
+                        <!-- Gantt rows will be inserted here by JavaScript -->
                     </div>
 
                     <div class="gantt-details">
@@ -1445,10 +1659,10 @@
                         </div>
                         <div class="detail-item">
     			<div class="detail-label">Responsável:</div>
-    			<div class="detail-value"><strong>Departamento Jurídico</strong></div>
+   			<div class="detail-value"><strong>Departamento Jurídico</strong></div>
 			</div>
 
-
+                        <!-- Adicionado progresso -->
                         <div class="detail-item progress">
                             <div class="detail-label">Progresso:</div>
                             <div class="detail-value" id="progressValue">0%</div>
@@ -1471,7 +1685,6 @@
                                 <th>Condomínio</th>
                                 <th>Data</th>
                                 <th>Hora</th>
-                                <th>Evento</th>
                                 <th>Formato</th>
                                 <th>Tipo</th>
                                 <th>Responsável</th>
@@ -1521,48 +1734,76 @@
                 <button class="close-modal" id="closeModal">&times;</button>
             </div>
             <div>
-               <div class="form-group">
-    
-<div class="form-group">
+                <div class="form-group">
+
+        <!-- Presidente -->
+
     <label>Presidente da Mesa</label>
     <input type="text" id="presidente" class="form-control" placeholder="Nome completo">
-    <input type="tel" 
-           id="presidente-telefone" 
-           class="form-control mt-2" 
-           placeholder="(XX) XXXXX-XXXX"
-           pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
-           inputmode="numeric"
-           autocomplete="tel"
-           onkeypress="return event.charCode >= 48 && event.charCode <= 57"> <!-- BLOQUEIA LETRAS -->
 </div>
 
 <div class="form-group">
-    <label>Síndico</label>
-    <input type="text" id="sindico" class="form-control" placeholder="Nome completo">
-    <input type="tel" 
-           id="sindico-telefone" 
-           class="form-control mt-2" 
-           placeholder="(XX) XXXXX-XXXX"
-           pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
-           inputmode="numeric"
-           autocomplete="tel"
-	   onkeypress="return event.charCode >= 48 && event.charCode <= 57"> <!-- BLOQUEIA LETRAS -->
+    <label>Telefone do Presidente</label>
+    <input type="text" id="telefone_presidente" class="form-control" placeholder="(XX) XXXXX-XXXX" maxlength="15">
 </div>
 
-<div class="form-group">
-    <label>Secretário</label>
-    <input type="text" id="secretario" class="form-control" placeholder="Nome completo">
-    <input type="tel" 
-           id="secretario-telefone" 
-           class="form-control mt-2" 
-           placeholder="(XX) XXXXX-XXXX"
-           pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
-           inputmode="numeric"
-           autocomplete="tel"
-	   onkeypress="return event.charCode >= 48 && event.charCode <= 57"> <!-- BLOQUEIA LETRAS -->
+<script>
+document.getElementById('telefone_presidente').addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, ''); // remove tudo que não é número
+    if (v.length > 0) v = '(' + v;
+    if (v.length > 3) v = v.slice(0, 3) + ') ' + v.slice(3);
+    if (v.length > 10) v = v.slice(0, 10) + '-' + v.slice(10, 14);
+    e.target.value = v;
+});
+</script>
 
-</div>
+        <!-- Síndico -->
+
                 <div class="form-group">
+                    <label>Síndico</label>
+                    <input type="text" id="sindico" class="form-control" placeholder="Nome completo">
+                </div>
+
+<div class="form-group">
+    <label>Telefone do Síndico</label>
+    <input type="text" id="telefone_sindico" class="form-control" placeholder="(XX) XXXXX-XXXX" maxlength="15">
+</div>
+
+<script>
+document.getElementById('telefone_sindico').addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, ''); // remove tudo que não é número
+    if (v.length > 0) v = '(' + v;
+    if (v.length > 3) v = v.slice(0, 3) + ') ' + v.slice(3);
+    if (v.length > 10) v = v.slice(0, 10) + '-' + v.slice(10, 14);
+    e.target.value = v;
+});
+</script>
+
+        <!-- Secretário -->
+
+                <div class="form-group">
+                    <label>Secretário</label>
+                    <input type="text" id="secretario" class="form-control" placeholder="Nome completo">
+                </div>
+                <div class="form-group">
+
+<div class="form-group">
+    <label>Telefone do Secretário</label>
+    <input type="text" id="telefone_secretario" class="form-control" placeholder="(XX) XXXXX-XXXX" maxlength="15">
+</div>
+
+<script>
+document.getElementById('telefone_secretario').addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, ''); // remove tudo que não é número
+    if (v.length > 0) v = '(' + v;
+    if (v.length > 3) v = v.slice(0, 3) + ') ' + v.slice(3);
+    if (v.length > 10) v = v.slice(0, 10) + '-' + v.slice(10, 14);
+    e.target.value = v;
+});
+</script>
+
+        <!-- Responsável pela Documentação -->
+
                     <label>Responsável pela Documentação</label>
                     <input type="text" id="responsavelDoc" class="form-control" placeholder="Nome completo">
                 </div>
@@ -1717,69 +1958,75 @@
     </div>
 
     <script>
+
+// ===== BANCO LOCAL (Dexie.js) =====
+const db = new Dexie('AssemblyManagementDB');
+db.version(1).stores({
+    agenda: 'id, data, condominio',
+    condominios: '++id, nome, cnpj, sindico, inicioMandato, fimMandato, ativo',
+    phases: 'id, assemblyId, [assemblyId+index]',
+    history: '++id, assemblyId, date',
+    pendingSync: '++id, payload, date'
+});
+
+// ===== FUNÇÃO DE SALVAR LOCAL + GOOGLE SHEETS =====
+async function salvarAssembleia(assembly) {
+    try {
+        // Salvar localmente (Dexie)
+        await db.agenda.put(assembly);
+
+        // Tentar enviar para o Google Sheets
+        const sucesso = await enviarParaGoogleSheets(assembly);
+
+        if (!sucesso) {
+            console.warn("Sem internet ou falha na API. Dados guardados para sincronizar depois.");
+            await db.pendingSync.add({ payload: assembly, date: new Date().toISOString() });
+        }
+    } catch (error) {
+        console.error("Erro ao salvar assembleia:", error);
+    }
+}
+
+// ===== ENVIO PARA GOOGLE SHEETS =====
+async function enviarParaGoogleSheets(assembly) {
+    try {
+        const SHEETS_WEB_APP_URL = "URL_DO_SEU_APPS_SCRIPT"; // Gerar no Google Apps Script
+        const resp = await fetch(SHEETS_WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(assembly)
+        });
+        return resp.ok;
+    } catch (error) {
+        return false;
+    }
+}
+
+// ===== SINCRONIZAR PENDENTES QUANDO VOLTAR INTERNET =====
+async function sincronizarPendentes() {
+    const pendentes = await db.pendingSync.toArray();
+    for (const item of pendentes) {
+        const sucesso = await enviarParaGoogleSheets(item.payload);
+        if (sucesso) {
+            await db.pendingSync.delete(item.id);
+            console.log("Pendência sincronizada:", item.payload);
+        }
+    }
+}
+
+// Detecta quando a internet volta e tenta enviar
+window.addEventListener("online", sincronizarPendentes);
+
         // ===== VARIÁVEIS GLOBAIS =====
-        let agenda = [];
-        let currentGanttIndex = -1;
-        let currentAssemblyId = null;
-        let currentEditId = null;
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
-        let condominios = [];
-        const pautasContainer = document.getElementById('pautasContainer');
-        const condominioSelect = document.getElementById('condominio');
-
-        // ===== FUNÇÕES MOBILE =====
-        // Verifica se é dispositivo móvel
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        // Solicita permissão para notificações
-        function enableNotifications() {
-            if ('Notification' in window && Notification.permission !== 'granted') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        console.log('Notificações ativadas!');
-                        showNotification('App instalado', 'Você receberá lembretes de assembleias');
-                    }
-                });
-            }
-        }
-
-        // Mostra notificação
-        function showNotification(title, message) {
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification(title, { 
-                    body: message,
-                    icon: 'icons/icon-192x192.png'
-                });
-            }
-        }
-
-        // Adiciona evento ao calendário
-        function addToCalendar(assembly) {
-            const startDate = new Date(`${assembly.data}T${assembly.hora}`);
-            const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000); // +2 horas
-            
-            const calendarEvent = {
-                title: `Assembleia: ${assembly.condominio}`,
-                description: `Pautas:\n${assembly.pautas.join('\n')}\n\nResponsável: ${assembly.responsavel}`,
-                start: startDate,
-                end: endDate,
-                location: assembly.local.includes('Presencial') ? 'Condomínio' : 'Online'
-            };
-
-            if (window.navigator.share) {
-                navigator.share({
-                    title: calendarEvent.title,
-                    text: calendarEvent.description,
-                    url: window.location.href
-                });
-            } else {
-                const dates = `${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}`;
-                window.open(`https://www.google.com/calendar/render?action=TEMPLATE&dates=${dates}&text=${encodeURIComponent(calendarEvent.title)}&details=${encodeURIComponent(calendarEvent.description)}&location=${encodeURIComponent(calendarEvent.location)}`);
-            }
-        }
+    let agenda = [];
+    let currentGanttIndex = -1;
+    let currentAssemblyId = null;
+    let currentEditId = null;
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let condominios = [];
+    const pautasContainer = document.getElementById('pautasContainer');
+    const condominioSelect = document.getElementById('condominio');
 
         // ===== GERADOR DE ID ÚNICO =====
         function generateId() {
@@ -1966,12 +2213,11 @@
             document.getElementById('condominio').value = '';
             document.getElementById('data').value = '';
             document.getElementById('hora').value = '';
-            document.getElementById('evento').value = '';
             document.getElementById('local').value = '';
             document.getElementById('tipo').value = '';
             document.getElementById('responsavel').value = '';
             pautasContainer.innerHTML = '';
-            addPautaField();
+            addPautaField(); // Adiciona apenas uma pauta
             currentEditId = null;
         }
 
@@ -2000,6 +2246,7 @@
             
             pautasContainer.appendChild(pautaItem);
             
+            // Adicionar event listeners aos botões
             const editBtn = pautaItem.querySelector('.edit-btn');
             const deleteBtn = pautaItem.querySelector('.delete-btn');
             
@@ -2084,6 +2331,7 @@
             const assembly = agenda[currentGanttIndex];
             const phase = assembly.phases[index];
             
+            // Se a etapa já está concluída, perguntar se deseja alterar
             if (phase.status === "concluido") {
                 if (confirm("Esta etapa já está concluída. Deseja alterar o status e o responsável?")) {
                     const responsavel = prompt("Informe o novo responsável:");
@@ -2103,10 +2351,12 @@
                 phase.dataConclusao = new Date().toISOString().split('T')[0];
                 phase.responsavel = responsavel;
                 
+                // Se não for a última etapa, iniciar a próxima
                 if (index < assembly.phases.length - 1 && assembly.phases[index+1].status === 'pendente') {
                     assembly.phases[index+1].status = 'andamento';
                     assembly.phases[index+1].dataInicio = new Date().toISOString().split('T')[0];
                     
+                    // Registrar no histórico
                     const now = new Date();
                     const formattedDate = now.toLocaleString('pt-BR', {
                         day: '2-digit',
@@ -2148,10 +2398,12 @@
                     document.getElementById('nextStep').textContent = "Processo concluído";
                 }
             } else {
+                // Se não há fase em andamento ou pendente, então está concluído
                 document.getElementById('currentStatus').textContent = "Concluído";
                 document.getElementById('nextStep').textContent = "-";
             }
             
+            // Atualizar data da última atualização
             const now = new Date();
             document.getElementById('lastUpdate').textContent = 
                 now.toLocaleString('pt-BR', { 
@@ -2162,6 +2414,7 @@
                     minute: '2-digit'
                 });
                 
+            // Atualizar progresso
             const completedPhases = assembly.phases.filter(p => p.status === 'concluido').length;
             const totalPhases = assembly.phases.length;
             const progress = Math.round((completedPhases / totalPhases) * 100);
@@ -2174,15 +2427,15 @@
             if (!assembly) return;
             
             if (confirm("Tem certeza que deseja reiniciar o processo? Todas as etapas serão resetadas.")) {
-                assembly.phases = JSON.parse(JSON.stringify(initialPhases));
-                assembly.processHistory = [];
+                assembly.phases = JSON.parse(JSON.stringify(initialPhases)); // Reset para o estado inicial
+                assembly.processHistory = []; // Limpar histórico
                 
                 renderGantt(assembly);
                 saveToLocalStorage();
             }
         }
 
-        // Mostrar histórico completo
+        // Mostrar histórico completo (filtrado por condomínio)
         function showHistory() {
             const historyModal = document.getElementById('historyModal');
             const historyContent = document.getElementById('historyContent');
@@ -2260,16 +2513,21 @@
                 </div>
             `;
             
+            // Preencher com os dados da primeira fase
             const firstPhase = assembly.phases[0];
             document.getElementById('situacaoAtas').value = firstPhase.status;
             document.getElementById('responsavelAtas').value = firstPhase.responsavel || '';
             
+            // Event listener para seleção de fase
             const phaseOptions = document.querySelectorAll('.phase-option');
             phaseOptions.forEach(option => {
                 option.addEventListener('click', () => {
+                    // Remover seleção anterior
                     phaseOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Adicionar seleção atual
                     option.classList.add('selected');
                     
+                    // Atualizar formulário com os dados da fase selecionada
                     const index = parseInt(option.dataset.index);
                     const phase = assembly.phases[index];
                     document.getElementById('situacaoAtas').value = phase.status;
@@ -2277,6 +2535,7 @@
                 });
             });
             
+            // Event listener para salvar
             document.getElementById('saveAtasBtn').addEventListener('click', () => {
                 const selectedOption = document.querySelector('.phase-option.selected');
                 if (!selectedOption) return;
@@ -2296,6 +2555,7 @@
                         phase.dataInicio = new Date().toISOString().split('T')[0];
                     }
                     
+                    // Atualizar histórico
                     const now = new Date();
                     const formattedDate = now.toLocaleString('pt-BR', {
                         day: '2-digit',
@@ -2342,8 +2602,9 @@
             }).toUpperCase();
             
             const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const blanks = (firstDay + 6) % 7;
+            const blanks = (firstDay + 6) % 7; // Ajuste para começar na segunda-feira
             
+            // Adicionar dias em branco no início do mês
             for (let i = 0; i < blanks; i++) {
                 const blankDay = document.createElement('div');
                 blankDay.className = 'day blank';
@@ -2352,6 +2613,7 @@
             
             const days = new Date(currentYear, currentMonth + 1, 0).getDate();
             
+            // Criar mapa de eventos por data (YYYY-MM-DD) para o mês atual
             const eventsByDate = {};
             agenda.forEach((event, index) => {
                 const eventDate = new Date(event.data);
@@ -2376,6 +2638,7 @@
                 
                 cell.innerHTML = `<div class="day-number">${d}</div>`;
                 
+                // Destacar dia atual
                 const today = new Date();
                 if (today.getFullYear() === currentYear && 
                     today.getMonth() === currentMonth && 
@@ -2383,50 +2646,54 @@
                     cell.classList.add('today');
                 }
 
-                const condominiosComFimMandato = condominios.filter(condominio => {
-                    if (!condominio.fimMandato || !condominio.ativo) return false;
-                    
-                    const dataFimMandato = new Date(condominio.fimMandato);
-                    return (
-                        dataFimMandato.getFullYear() === currentYear &&
-                        dataFimMandato.getMonth() === currentMonth && 
-                        dataFimMandato.getDate() === d
-                    );
-                });
+               // Verificar condomínios com fim de mandato nesta data
+const condominiosComFimMandato = condominios.filter(condominio => {
+    if (!condominio.fimMandato || !condominio.ativo) return false;
+    
+    const dataFimMandato = new Date(condominio.fimMandato);
+    return (
+        dataFimMandato.getFullYear() === currentYear &&
+        dataFimMandato.getMonth() === currentMonth && 
+        dataFimMandato.getDate() === d
+    );
+});
 
-                if (condominiosComFimMandato.length > 0) {
-                    const containerFimMandato = document.createElement('div');
-                    containerFimMandato.className = 'fim-mandato-container';
-                    
-                    condominiosComFimMandato.forEach(condominio => {
-                        const itemFimMandato = document.createElement('div');
-                        itemFimMandato.className = 'fim-mandato-item';
-                        
-                        const dataFormatada = condominio.fimMandato.split('-').reverse().join('/');
-                        
-                        itemFimMandato.innerHTML = `
-                            <div class="fim-mandato-header">
-                                <i class="fas fa-user-clock"></i>
-                                <strong>Fim do Mandato</strong>
-                            </div>
-                            <div class="fim-mandato-body">
-                                <span class="condominio-nome">${condominio.nome}</span>
-                            </div>
-                            <div class="fim-mandato-footer">
-                            </div>
-                        `;
-                        
-                        itemFimMandato.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            showCondominioDetails(condominio);
-                        });
-                        
-                        containerFimMandato.appendChild(itemFimMandato);
-                    });
-                    
-                    cell.appendChild(containerFimMandato);
-                }
+// Se houver condomínios com fim de mandato nesta data
+if (condominiosComFimMandato.length > 0) {
+    const containerFimMandato = document.createElement('div');
+    containerFimMandato.className = 'fim-mandato-container';
+    
+    condominiosComFimMandato.forEach(condominio => {
+        const itemFimMandato = document.createElement('div');
+        itemFimMandato.className = 'fim-mandato-item';
+        
+        // Formatar data para exibição (dd/mm/aaaa)
+        const dataFormatada = condominio.fimMandato.split('-').reverse().join('/');
+        
+        itemFimMandato.innerHTML = `
+            <div class="fim-mandato-header">
+                <i class="fas fa-user-clock"></i>
+                <strong>Fim do Mandato</strong>
+            </div>
+            <div class="fim-mandato-body">
+                <span class="condominio-nome">${condominio.nome}</span>
+            </div>
+            <div class="fim-mandato-footer">
+            </div>
+        `;
+        
+        itemFimMandato.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showCondominioDetails(condominio);
+        });
+        
+        containerFimMandato.appendChild(itemFimMandato);
+    });
+    
+    cell.appendChild(containerFimMandato);
+}
 
+                // Feriados
                 const holiday = holidays.find(h => h.date === dateStr);
                 if (holiday) {
                     const hl = document.createElement('span');
@@ -2435,6 +2702,7 @@
                     cell.appendChild(hl);
                 }
                 
+                // Eventos da agenda
                 const events = eventsByDate[dateStr] || [];
                 if (events.length > 0) {
                     events.forEach(eventData => {
@@ -2442,14 +2710,17 @@
                         eventEl.className = 'event';
                         eventEl.dataset.index = eventData.index;
                         
+                        // Obter status atual
                         const currentPhase = eventData.phases.find(p => p.status === "andamento") || 
                                             eventData.phases.find(p => p.status === "pendente");
                         const status = currentPhase ? currentPhase.name : "Concluído";
                         
+                        // Se não foi iniciado, mostra "Ata pendente"
                         const statusText = eventData.phases[0].status === 'pendente' && 
                                           eventData.phases.every(p => p.status === 'pendente') ? 
                                           "Ata pendente" : status;
                         
+                        // Obter ícone de status
                         const statusIcon = getStatusIcon(eventData);
                         
                         eventEl.innerHTML = `
@@ -2460,6 +2731,7 @@
                             </span>
                         `;
                         
+                        // Adicionar evento de clique para atualizar a situação das atas
                         eventEl.addEventListener('click', (e) => {
                             e.stopPropagation();
                             currentGanttIndex = eventData.index;
@@ -2502,10 +2774,12 @@
             renderAgendamentos();
             updateDashboardStats();
             
+            // Verificar se a assembleia atualmente selecionada está no mês atual
             if (currentGanttIndex >= 0 && currentGanttIndex < agenda.length) {
                 const assembly = agenda[currentGanttIndex];
                 const eventDate = new Date(assembly.data);
                 if (eventDate.getMonth() !== currentMonth || eventDate.getFullYear() !== currentYear) {
+                    // A assembleia selecionada não está no mês atual, então limpar o Gantt
                     currentGanttIndex = -1;
                     renderGantt(null);
                 }
@@ -2517,6 +2791,7 @@
             const body = document.getElementById('agendamentosBody');
             body.innerHTML = '';
             
+            // Filtrar eventos do mês atual
             const eventosMes = agenda.filter(evento => {
                 const eventDate = new Date(evento.data);
                 return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
@@ -2528,15 +2803,16 @@
             }
             
             eventosMes.forEach((evento) => {
+                // Encontrar índice GLOBAL na agenda principal
                 const globalIndex = agenda.findIndex(a => a.id === evento.id);
                 
+                // Linha principal
                 const tr = document.createElement('tr');
                 tr.className = 'main-row';
                 tr.innerHTML = `
                     <td>${evento.condominio}</td>
                     <td>${formatDateBR(evento.data)}</td>
                     <td>${evento.hora}</td>
-                    <td>${evento.evento}</td>
                     <td>${evento.local}</td>
                     <td>${evento.tipo}</td>
                     <td>${evento.responsavel}</td>
@@ -2559,6 +2835,7 @@
                 `;
                 body.appendChild(tr);
                 
+                // Linha de detalhes para pautas
                 const detailRow = document.createElement('tr');
                 detailRow.className = 'detail-row';
                 detailRow.style.display = 'none';
@@ -2571,6 +2848,7 @@
                     </td>
                 `;
                 
+                // Adicionar evento para expandir/detalhar
                 tr.addEventListener('click', function(e) {
                     if (!e.target.closest('button')) {
                         detailRow.style.display = detailRow.style.display === 'none' ? 'table-row' : 'none';
@@ -2581,7 +2859,7 @@
             });
         }
 
-        // Editar assembleia
+        // Editar assembleia (agora por ID)
         function editAssembly(id) {
             const index = agenda.findIndex(a => a.id === id);
             if (index === -1) return;
@@ -2589,23 +2867,25 @@
             const assembly = agenda[index];
             currentEditId = id;
             
+            // Preencher formulário com os dados
             document.getElementById('condominio').value = assembly.condominio;
             document.getElementById('data').value = assembly.data;
             document.getElementById('hora').value = assembly.hora;
-            document.getElementById('evento').value = assembly.evento;
             document.getElementById('local').value = assembly.local;
             document.getElementById('tipo').value = assembly.tipo;
             document.getElementById('responsavel').value = assembly.responsavel;
             
+            // Preencher pautas
             pautasContainer.innerHTML = '';
             assembly.pautas.forEach(pauta => {
                 addPautaField(pauta);
             });
             
+            // Scroll para o topo
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Excluir assembleia
+        // Excluir assembleia (agora por ID)
         function deleteAssembly(id) {
             const index = agenda.findIndex(a => a.id === id);
             if (index === -1) return;
@@ -2619,46 +2899,47 @@
             }
         }
 
-        // Mostrar detalhes do condomínio
-        function showCondominioDetails(condominio) {
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.display = 'flex';
-            modal.style.alignItems = 'center';
-            modal.style.justifyContent = 'center';
-            modal.style.position = 'fixed';
-            modal.style.top = '0';
-            modal.style.left = '0';
-            modal.style.width = '100%';
-            modal.style.height = '100%';
-            modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-            modal.style.zIndex = '1000';
-            
-            const modalContent = document.createElement('div');
-            modalContent.className = 'condominio-details-modal';
-            modalContent.style.background = 'white';
-            modalContent.style.borderRadius = '12px';
-            modalContent.style.padding = '20px';
-            modalContent.style.maxWidth = '500px';
-            modalContent.style.width = '90%';
-            modalContent.style.maxHeight = '90vh';
-            modalContent.style.overflowY = 'auto';
-            
-            modalContent.innerHTML = `
-                <div class="condominio-header" style="background: linear-gradient(135deg, #2c3e50, #1a2530); color: white; padding: 20px; position: relative; text-align: center; border-radius: 8px 8px 0 0;">
-                    <h2 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">${condominio.nome}</h2>
+       function showCondominioDetails(condominio) {
+    // Criar um elemento modal personalizado
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    modal.style.zIndex = '1000';
+    
+    // Criar o conteúdo do modal
+    const modalContent = document.createElement('div');
+    modalContent.className = 'condominio-details-modal';
+    modalContent.style.background = 'white';
+    modalContent.style.borderRadius = '12px';
+    modalContent.style.padding = '20px';
+    modalContent.style.maxWidth = '500px';
+    modalContent.style.width = '90%';
+    modalContent.style.maxHeight = '90vh';
+    modalContent.style.overflowY = 'auto';
+    
+    // Adicionar o conteúdo do condomínio
+    modalContent.innerHTML = `
+        <div class="condominio-header" style="background: linear-gradient(135deg, #2c3e50, #1a2530); color: white; padding: 20px; position: relative; text-align: center; border-radius: 8px 8px 0 0;">
+            <h2 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">${condominio.nome}</h2>
+           </div>
+        
+        <div class="condominio-info" style="padding: 20px;">
+            <div class="info-card" style="display: flex; align-items: center; gap: 15px; padding: 15px; margin-bottom: 15px; background: #f8f9fa; border-radius: 10px;">
+                <div class="info-icon" style="font-size: 1.8rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #eef2f7; border-radius: 50%;">👤</div>
+                <div>
+                    <div class="info-label" style="font-weight: 600; color: #7f8c8d; font-size: 0.95rem; margin-bottom: 3px;">Síndico</div>
+                    <div class="info-value" style="font-weight: 500; color: #2c3e50; font-size: 1.1rem;">${condominio.sindico || 'Não informado'}</div>
                 </div>
-                
-                <div class="condominio-info" style="padding: 20px;">
-                    <div class="info-card" style="display: flex; align-items: center; gap: 15px; padding: 15px; margin-bottom: 15px; background: #f8f9fa; border-radius: 10px;">
-                        <div class="info-icon" style="font-size: 1.8rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #eef2f7; border-radius: 50%;">👤</div>
-                        <div>
-                            <div class="info-label" style="font-weight: 600; color: #7f8c8d; font-size: 0.95rem; margin-bottom: 3px;">Síndico</div>
-                            <div class="info-value" style="font-weight: 500; color: #2c3e50; font-size: 1.1rem;">${condominio.sindico || 'Não informado'}</div>
-                        </div>
-                    </div>
-                    
-                                
+            </div>            
+                        
             <div class="mandato-section" style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #e0e0e0;">
                 <div class="section-title" style="font-weight: 600; color: #2c3e50; font-size: 1.2rem; margin-bottom: 15px; text-align: center;">Período do Mandato</div>
                 <div class="mandato-period" style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
@@ -2703,10 +2984,10 @@
 
         // Abrir modal de assinaturas
         function openSignatureModal(id) {
-    const signatureModal = document.getElementById('signatureModal');
-    signatureModal.style.display = 'flex';
-    currentAssemblyId = id;
-}
+            const signatureModal = document.getElementById('signatureModal');
+            signatureModal.style.display = 'flex';
+            currentAssemblyId = id;
+        }
 
         // Fechar modais
         document.getElementById('closeModal').addEventListener('click', () => {
@@ -2886,7 +3167,6 @@
                                 <th style="padding: 12px; text-align: left;">Condomínio</th>
                                 <th style="padding: 12px; text-align: left;">Data</th>
                                 <th style="padding: 12px; text-align: left;">Hora</th>
-                                <th style="padding: 12px; text-align: left;">Evento</th>
                                 <th style="padding: 12px; text-align: left;">Formato</th>
                                 <th style="padding: 12px; text-align: left;">Tipo</th>
                                 <th style="padding: 12px; text-align: left;">Responsável</th>
@@ -2898,7 +3178,6 @@
                                     <td style="padding: 12px;">${evento.condominio}</td>
                                     <td style="padding: 12px;">${formatDateBR(evento.data)}</td>
                                     <td style="padding: 12px;">${evento.hora}</td>
-                                    <td style="padding: 12px;">${evento.evento}</td>
                                     <td style="padding: 12px;">${evento.local}</td>
                                     <td style="padding: 12px;">${evento.tipo}</td>
                                     <td style="padding: 12px;">${evento.responsavel}</td>
@@ -3017,14 +3296,98 @@
             });
         }
 
-        // Visualizar condomínio
-        function viewCondominio(index) {
-            const condominio = condominios[index];
-            showAlert(
-                condominio.nome, 
-                `CNPJ: ${condominio.cnpj || 'Não informado'}\nSíndico: ${condominio.sindico || 'Não informado'}\nSíndico: ${condominio.sindico}\nInício Mandato: ${condominio.inicioMandato}\nFim Mandato: ${condominio.fimMandato}\nStatus: ${condominio.ativo ? 'Ativo' : 'Inativo'}`
-            );
-        }
+
+	// Visualizar - olhinho
+function viewCondominio(index) {
+    const condominio = condominios[index];
+    
+    // Formatar datas com ícones
+    const inicioMandato = condominio.inicioMandato 
+        ? `<span class="date-icon">📅</span> ${formatDateBR(condominio.inicioMandato)}` 
+        : '-';
+    
+    const fimMandato = condominio.fimMandato 
+        ? `<span class="date-icon">📅</span> ${formatDateBR(condominio.fimMandato)}` 
+        : '-';
+
+    // Status badge modificado para ficar ao lado do CNPJ
+    const statusBadge = `<span class="status-badge ${condominio.ativo ? 'status-ativo' : 'status-inativo'}">
+        ${condominio.ativo ? 'Ativo' : 'Inativo'}
+    </span>`;
+
+    const content = `
+    <div class="styled-alert">
+        <div class="alert-header">
+            <h3>Detalhes do Condomínio</h3>
+        </div>
+        <div class="alert-body">
+            <div class="condominio-view">
+                <div class="view-header">
+                    <h3>${condominio.nome}</h3>
+                </div>
+                
+                <div class="view-details">
+                    <div class="detail-row">
+                        <span class="detail-label">CNPJ:</span>
+                        <span class="detail-value">
+                            ${condominio.cnpj || 'Não informado'}
+                            ${statusBadge}
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Síndico:</span>
+                        <span class="detail-value">${condominio.sindico || 'Não informado'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Mandato:</span>
+                        <span class="detail-value date-row">
+                            ${inicioMandato} 
+                            <span class="date-separator">→</span>
+                            ${fimMandato}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; padding: 15px;">
+            <button onclick="document.querySelector('.alert-overlay').remove()" 
+                    style="padding: 8px 20px; background: #003366; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Fechar
+            </button>
+        </div>
+    </div>
+    `;
+    
+    // Criar overlay e mostrar o conteúdo
+    const overlay = document.createElement('div');
+    overlay.className = 'alert-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.right = '0';
+    overlay.style.bottom = '0';
+    overlay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.zIndex = '1000';
+    
+    overlay.innerHTML = content;
+    document.body.appendChild(overlay);
+}
+
+
+// Função auxiliar para formatar datas
+function formatDateBR(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+
 
         // Editar condomínio
         function editCondominio(index) {
@@ -3039,6 +3402,7 @@
             document.getElementById('condominioAtivo').checked = condominio.ativo;
         }
 
+
         // Alternar status do condomínio
         function toggleStatusCondominio(index) {
             condominios[index].ativo = !condominios[index].ativo;
@@ -3046,6 +3410,7 @@
             saveToLocalStorage();
             loadCondominiosInSelect();
         }
+
 
         // Salvar condomínio
         saveCondominioBtn.addEventListener('click', () => {
@@ -3055,12 +3420,12 @@
             const inicioMandato = document.getElementById('condominioInicioMandato').value;
             const fimMandato = document.getElementById('condominioFimMandato').value;
             const ativo = document.getElementById('condominioAtivo').checked;
-            
-            if (!nome) {
-                showAlert('Atenção', 'O nome do condomínio é obrigatório!');
-                return;
-            }
-            
+                                  
+	    if (!nome || !cnpj || !sindico || !inicioMandato || !fimMandato) {
+       	    showAlert('Preencha todos os campos obrigatórios.');
+            return;
+  	   }
+
             const condominio = {
                 nome, 
                 cnpj, 
@@ -3131,17 +3496,24 @@
             
             // Preencher detalhes
             detailsDiv.innerHTML = `
-                <h3>${assembly.evento}</h3>
-                <p><strong>Condomínio:</strong> ${assembly.condominio}</p>
-                <p><strong>Data:</strong> ${formatDateBR(assembly.data)}</p>
-                <p><strong>Hora:</strong> ${assembly.hora}</p>
-                <p><strong>Formato:</strong> ${assembly.local}</p>
-                <p><strong>Tipo:</strong> ${assembly.tipo}</p>
-                <p><strong>Responsável:</strong> ${assembly.responsavel}</p>
-                <h4>Pautas:</h4>
+<div class="detalhes-assembleia">
+    <div class="detalhes-assembleia-header">📋 Detalhes da Assembleia</div>
+    <div class="detalhes-assembleia-body">
+        <p><strong>Condomínio:</strong> ${assembly.condominio}</p>
+        <p><strong>Data:</strong> ${formatDateBR(assembly.data)}</p>
+        <p><strong>Hora:</strong> ${assembly.hora}</p>
+        <p><strong>Formato:</strong> ${assembly.local}</p>
+        <p><strong>Tipo:</strong> ${assembly.tipo}</p>
+        <p><strong>Responsável:</strong> ${assembly.responsavel}</p>
                 <ol>
-                    ${assembly.pautas.map((p, i) => `<li>${p.replace(/\n/g, '<br>')}</li>`).join('')}
+
+		<h4>Pautas:</h4>
+                    ${assembly.pautas.map((p, i) => `
+        <div class="pauta-box">
+            <div class="pauta-titulo">📌 Pauta ${i + 1}</div>
+            <div class="pauta-descricao">${p.replace(/\n/g, '<br>')}</li>`).join('')}
                 </ol>
+
                 
                 <div style="margin-top: 20px;">
                     <h4>Assinaturas Registradas:</h4>
@@ -3305,7 +3677,6 @@
                 const condominio = document.getElementById('condominio').value;
                 const data = document.getElementById('data').value;
                 const hora = document.getElementById('hora').value;
-                const evento = document.getElementById('evento').value;
                 const local = document.getElementById('local').value;
                 const tipo = document.getElementById('tipo').value;
                 const responsavel = document.getElementById('responsavel').value;
@@ -3315,7 +3686,7 @@
                 const pautas = Array.from(pautaTextareas).map(textarea => textarea.value.trim());
                 
                 // Validar campos obrigatórios
-                if (!condominio || !data || !hora || !evento || !local || !tipo || !responsavel) {
+                if (!condominio || !data || !hora || !local || !tipo || !responsavel) {
                     showAlert('Atenção', 'Preencha todos os campos obrigatórios!');
                     return;
                 }
@@ -3336,7 +3707,6 @@
                             condominio,
                             data,
                             hora,
-                            evento,
                             local,
                             tipo,
                             responsavel,
@@ -3351,7 +3721,6 @@
                         condominio,
                         data,
                         hora,
-                        evento,
                         local,
                         tipo,
                         responsavel,
@@ -3389,157 +3758,5 @@
   navigator.serviceWorker.register("sw.js");
 }
        </script>
-
-<script>
-
-    // ===== OTIMIZAÇÕES PARA MOBILE =====
-    // 1. Detectar modo standalone (app instalado)
-    function isRunningStandalone() {
-        return window.matchMedia('(display-mode: standalone)').matches || 
-               window.navigator.standalone ||
-               document.referrer.includes('android-app://');
-    }
-
-    // 2. Verificar conexão (online/offline)
-    function checkConnection() {
-        const status = document.getElementById('connection-status');
-        if (!status) return; // Se não houver elemento, sai da função
-        
-        if (navigator.onLine) {
-            status.textContent = 'Online';
-            status.style.color = 'green';
-        } else {
-            status.textContent = 'Offline - Modo local ativado';
-            status.style.color = 'red';
-        }
-    }
-
-    // 3. Evento de instalação do PWA
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        
-        const installBtn = document.createElement('button');
-        installBtn.textContent = '📲 Instalar App';
-        installBtn.className = 'btn btn-accent';
-        installBtn.style.margin = '10px 0';
-        installBtn.onclick = async () => {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                installBtn.style.display = 'none';
-            }
-            deferredPrompt = null;
-        };
-        
-        // Adiciona o botão no cabeçalho (header)
-        const header = document.querySelector('header');
-        if (header) {
-            header.appendChild(installBtn);
-        }
-    });
-
-    // 4. Ouvintes de conexão
-    window.addEventListener('online', checkConnection);
-    window.addEventListener('offline', checkConnection);
-
-    // 5. Executa a verificação inicial
-    checkConnection();
-
-    // 6. (Opcional) Mostrar botão "Adicionar à tela inicial"
-    function showAddToHomeScreen() {
-        if (!isRunningStandalone() && deferredPrompt) {
-            const addBtn = document.createElement('button');
-            addBtn.textContent = '➕ Adicionar à tela inicial';
-            addBtn.className = 'btn btn-accent';
-            addBtn.onclick = () => deferredPrompt.prompt();
-            document.querySelector('header').appendChild(addBtn);
-        }
-    }
-
-    // Chame esta função se quiser mostrar o botão automaticamente
-    // showAddToHomeScreen();
-</script>
-
-<script>
-// Verificar se é mobile
-function isMobile() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
-
-// Adicionar evento de instalação
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  const installBtn = document.createElement('button');
-  installBtn.textContent = 'Instalar App';
-  installBtn.className = 'btn btn-accent';
-  installBtn.style.margin = '10px 0';
-  installBtn.onclick = () => e.prompt();
-  document.querySelector('header').appendChild(installBtn);
-});
-
-// Notificações
-function requestNotificationPermission() {
-  if ('Notification' in window) {
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        console.log('Permissão para notificações concedida');
-      }
-    });
-  }
-}
-
-// Inicialização
-if (isMobile()) {
-  requestNotificationPermission();
-}
-
-// Registrar Service Worker (mantenha o que já tem)
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-</script>
-
-<!-- Dentro do <header> ou antes do fechamento </body> -->
-<div id="connection-status" style="
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    padding: 5px 10px;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 1000;
-"></div>
-<script>
-
-// Máscara para telefone (coloque isto no final do seu arquivo, antes do </body>)
-document.querySelectorAll('input[type="tel"]').forEach(input => {
-    input.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 2) {
-            value = `(${value.substring(0,2)}) ${value.substring(2)}`;
-        }
-        if (value.length > 10) {
-            value = `${value.substring(0,10)}-${value.substring(10,14)}`;
-        }
-        e.target.value = value;
-    });
-});
-</script>
-
-<script>
-function closeAllModals() {
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.style.display = 'none';
-    });
-    document.getElementById('alertModal').style.display = 'none';
-}
-
-</script>
-
 </body>
-
 </html>
