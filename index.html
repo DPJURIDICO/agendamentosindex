@@ -3522,7 +3522,7 @@ if ("serviceWorker" in navigator) {
 "></div>
 <script>
 
-// Máscara para telefone (coloque isto no final do seu arquivo, antes do </body>)
+// Máscara para telefone
 document.querySelectorAll('input[type="tel"]').forEach(input => {
     input.addEventListener('input', function(e) {
         let value = e.target.value.replace(/\D/g, '');
@@ -3538,5 +3538,6 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
 </script>
 
 </body>
+
 
 </html>
