@@ -132,17 +132,12 @@
             background: #e0a800;
         }
 
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        @media (max-width: 900px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
+         .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+   	
+	}
 
         .card {
             background: white;
@@ -1344,13 +1339,14 @@
             </div>
         </div>
 
-        <div class="main-content">
-            <!-- Agenda Section -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Agendar Assembleia</h2>
-                </div>
-                <div class="card-body">
+      <div class="main-content">
+    <!-- Agenda Section -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Agendar Assembleia</h2>
+        </div>
+        <div class="card-body">
+
                     <div class="form-group">
                         <label for="condominio">Condomínio</label>
                         <select id="condominio" class="form-control" required>
@@ -1419,13 +1415,15 @@
                 </div>
             </div>
 
-            <!-- Gantt Section -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Acompanhamento de Registro de Atas</h2>
-                    <button class="btn btn-secondary" id="showHistoryBtn">
-                        <i class="fas fa-history"></i> Histórico
-                    </button>
+                <!-- Gantt Section -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Acompanhamento de Registro de Atas</h2>
+            <button class="btn btn-secondary" id="showHistoryBtn">
+                <i class="fas fa-history"></i> Histórico
+            </button>
+        </div>
+        <div class="card-body">
                 </div>
                 <div class="card-body">
                     <div class="gantt-container" id="ganttContainer">
@@ -2710,10 +2708,10 @@
 
         // Abrir modal de assinaturas
         function openSignatureModal(id) {
-            const signatureModal = document.getElementById('signatureModal');
-            signatureModal.style.display = 'flex';
-            currentAssemblyId = id;
-        }
+    const signatureModal = document.getElementById('signatureModal');
+    signatureModal.style.display = 'flex';
+    currentAssemblyId = id;
+}
 
         // Fechar modais
         document.getElementById('closeModal').addEventListener('click', () => {
@@ -3522,7 +3520,7 @@ if ("serviceWorker" in navigator) {
 "></div>
 <script>
 
-// Máscara para telefone
+// Máscara para telefone (coloque isto no final do seu arquivo, antes do </body>)
 document.querySelectorAll('input[type="tel"]').forEach(input => {
     input.addEventListener('input', function(e) {
         let value = e.target.value.replace(/\D/g, '');
@@ -3537,7 +3535,16 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
 });
 </script>
 
-</body>
+<script>
+function closeAllModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.style.display = 'none';
+    });
+    document.getElementById('alertModal').style.display = 'none';
+}
 
+</script>
+
+</body>
 
 </html>
