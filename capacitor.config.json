@@ -1,0 +1,6 @@
+{
+  "appId": "com.sga.app",
+  "appName": "SGA",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

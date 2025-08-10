@@ -1,0 +1,3542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Assembleias">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-512x512.png">
+    <link rel="apple-touch-icon" href="icons/icon-512x512.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <title>Sistema de Gestão de Assembleias</title>
+    <style>
+        :root {
+            --primary: #003366;
+            --secondary: #4a86e8;
+            --accent: #ffc107;
+            --light: #f5f7fa;
+            --dark: #222;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #e4e7ec;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7ec 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #2c3e50, #1a2530);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo h1 span {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+            color: #4fc3f7;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background: #002244;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn i {
+            font-size: 16px;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: #3a76d8;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .btn-accent:hover {
+            background: #e0a800;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .card-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 22px;
+        }
+
+        .card-body {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .form-control {
+            padding: 12px;
+            border: 1px solid #d0d9e7;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+            outline: none;
+        }
+        
+        .pauta-textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .pautas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid #d0d9e7;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8faff;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .pauta-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        
+        .pauta-number {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .pauta-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .pauta-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .edit-btn {
+            background: var(--warning);
+            color: black;
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .gantt-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .gantt-row {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+
+        .gantt-row:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .phase-label {
+            width: 180px;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 15px;
+        }
+
+        .gantt-bar-container {
+            flex: 1;
+            height: 30px;
+            background: #e4e8f5;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gantt-bar {
+            height: 100%;
+            border-radius: 15px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            position: relative;
+            transition: width 0.5s ease;
+            width: 0;
+        }
+
+        .gantt-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+        }
+
+        .gantt-info {
+            width: 200px;
+            text-align: right;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-pendente { background-color: var(--danger); }
+        .status-andamento { background-color: var(--warning); }
+        .status-concluido { background-color: var(--success); }
+
+        .gantt-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .gantt-details {
+            margin-top: 25px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .gantt-details h3 {
+            color: var(--primary);
+            border-bottom: 1px solid #e4e8f5;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e4e8f5;
+        }
+
+        .detail-label {
+            width: 200px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .progress-btn {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            cursor: pointer;
+            font-weight: 600;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        .progress-btn:hover {
+            text-decoration: underline;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            background: linear-gradient(to right, var(--primary), #004c99);
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            color: white;
+            font-weight: 500;
+        }
+
+        .calendar-header button {
+            padding: 10px 18px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .calendar-header button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7,1fr);
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: bold;
+            padding: 12px 0;
+            background: #e6f0fa;
+            border-radius: 4px;
+            color: var(--primary);
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7,1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .day {
+            background: #fff;
+            border: 1px solid #e0e8f5;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 120px;
+            position: relative;
+            cursor: pointer;
+            color: var(--dark);
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .day:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .day.today {
+            border: 2px solid var(--primary);
+            background: #f0f7ff;
+        }
+
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .event {
+            background: var(--primary);
+            color: #fff;
+            font-size: 12px;
+            padding: 6px 8px;
+            margin-top: 8px;
+            border-radius: 5px;
+            display: block;
+            word-break: break-word;
+            line-height: 1.4;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .event:hover {
+            background: #002244;
+        }
+
+        .condominio-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .responsavel-name {
+            font-size: 11px;
+            display: block;
+        }
+        
+        .status-info {
+            display: block;
+            font-size: 11px;
+            margin-top: 2px;
+            font-style: italic;
+            color: #ffc107;
+        }
+
+        .holiday-label {
+            font-size: 11px;
+            color: var(--danger);
+            display: block;
+            margin-top: 3px;
+            font-style: italic;
+            background: #fff0f0;
+            padding: 3px 5px;
+            border-radius: 3px;
+            border: 1px solid #ffcccc;
+            font-weight: bold;
+        }
+        
+        .mandato-label {
+            display: block;
+            font-size: 11px;
+            margin-top: 3px;
+            font-style: italic;
+            background: #fff8e1;
+            padding: 3px 5px;
+            border-radius: 3px;
+            border: 1px solid #ffd54f;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .mandato-fim-label {
+            display: block;
+            font-size: 11px;
+            margin-top: 3px;
+            font-style: italic;
+            background: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+            border: 1px solid #ffcdd2;
+            font-weight: bold;
+            color: #c62828;
+        }
+
+        .day.blank {
+            background: #f8faff;
+            border: 1px dashed #d0d9e7;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .gantt-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .gantt-bar-container {
+                width: 100%;
+            }
+            
+            .gantt-info {
+                width: 100%;
+                text-align: left;
+            }
+            
+            .gantt-controls {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            .form-control {
+                padding: 10px;
+                font-size: 16px;
+            }
+            
+            .pautas-container {
+                max-height: 200px;
+            }
+        }
+
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+            max-height: 600px;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--dark);
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eaeef5;
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f8faff;
+        }
+        
+        tr.main-row {
+            cursor: pointer;
+        }
+
+        .pautas-list {
+            padding-left: 20px;
+            margin: 5px 0;
+        }
+
+        .pautas-list li {
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+        }
+        
+        .detail-row td {
+            background-color: #f8faff !important;
+            padding: 15px !important;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .modal-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 22px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--danger);
+        }
+
+        .history-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8faff;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .history-date {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .history-details {
+            color: #555;
+            white-space: pre-wrap;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .alert-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alert-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .alert-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .alert-message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .alert-btn {
+            padding: 10px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .condominio-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eaeef5;
+        }
+
+        .condominio-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-ativo {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-inativo {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .mandato-info {
+            font-size: 13px;
+            color: #555;
+            margin-top: 5px;
+        }
+        
+        .modal-sindicos {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .sindico-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eaeef5;
+        }
+        
+        .sindico-info {
+            flex: 1;
+        }
+        
+        .sindico-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .mandato-date {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .assembly-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .view-btn {
+            background: #4a86e8;
+            color: white;
+        }
+        
+        .off-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .phase-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .phase-option {
+            padding: 10px 15px;
+            background: #e4e8f5;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .phase-option:hover {
+            background: #d0d9e7;
+        }
+        
+        .phase-option.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: #f1f1f1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-button:hover {
+            background: #e0e0e0;
+        }
+        
+        .tab-button.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .status-icon {
+            margin-right: 5px;
+        }
+
+        .progress-container {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 8px;
+            border: 1px solid #e4e8f5;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .modal-btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        .mandato-tooltip {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-width: 300px;
+        }
+        
+        .condominio-details {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            max-width: 500px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .condominio-header {
+            background: linear-gradient(135deg, #2c3e50, #1a2530);
+            color: white;
+            padding: 20px;
+            position: relative;
+            text-align: center;
+        }
+
+        .condominio-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+        }   
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .status-badge.inactive {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .condominio-info {
+            padding: 20px;
+        }
+
+        .info-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .info-icon {
+            font-size: 1.8rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef2f7;
+            border-radius: 50%;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .mandato-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed #e0e0e0;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mandato-period {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .period-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: #edf7ff;
+            border-radius: 10px;
+            border: 1px solid #d0e8ff;
+            text-align: center;
+        }
+
+        .period-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .period-label {
+            font-weight: 500;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .period-value {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .period-divider {
+            color: #95a5a6;
+            font-size: 1.5rem;
+            padding: 0 5px;
+        }
+
+        .fim-mandato-container {
+            margin-top: 5px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .fim-mandato-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #fff8f8;
+            border-left: 3px solid #e53935;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .fim-mandato-item:hover {
+            background: #ffebee;
+            transform: translateX(2px);
+        }
+
+        .fim-mandato-header {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #e53935;
+            font-size: 10px;
+            margin-bottom: 5px;
+        }
+
+        .fim-mandato-header i {
+            font-size: 10px;
+        }
+
+        .fim-mandato-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .condominio-nome {
+            font-weight: 600;
+            font-size: 8px;
+            color: #333;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fim-mandato-footer {
+            margin-top: 4px;
+            font-size: 11px;
+            color: #777;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+	input:invalid {
+    	border-color: #dc3545;
+	
+	}
+
+	input:valid {
+    	border-color: #28a745;
+
+	}
+
+	@media (max-width: 768px) {
+            input[type="tel"] {
+                font-size: 16px;
+                padding: 12px 15px;
+                margin-top: 8px;
+            }
+        
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-calendar-days"></i> 
+                <h1>AGENDAMENTOS - <span>ASSEMBLEIAS</span></h1>
+            </div>
+            <div class="controls">
+                <button class="btn btn-secondary" id="printBtn">
+                    <i class="fas fa-eye"></i> Visualizar Agenda
+                </button>
+                <button class="btn btn-accent" id="manageCondominiosBtn">
+                    <i class="fas fa-building"></i> Gerenciar Condomínios
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="fas fa-calendar-check fa-2x" style="color: var(--primary);"></i>
+                <div class="stat-value" id="totalAssembleias">0</div>
+                <div class="stat-label">Assembleias Agendadas</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-file-signature fa-2x" style="color: var(--success);"></i>
+                <div class="stat-value" id="atasConcluidas">0</div>
+                <div class="stat-label">Atas Concluídas</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-spinner fa-2x" style="color: var(--warning);"></i>
+                <div class="stat-value" id="atasAndamento">0</div>
+                <div class="stat-label">Em Andamento</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-exclamation-triangle fa-2x" style="color: var(--danger);"></i>
+                <div class="stat-value" id="atasPendentes">0</div>
+                <div class="stat-label">Atas Pendentes</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Agenda Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Agendar Assembleia</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="condominio">Condomínio</label>
+                        <select id="condominio" class="form-control" required>
+                            <option value="">Selecione o condomínio</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data">Data</label>
+                        <input type="date" id="data" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hora">Hora</label>
+                        <input type="time" id="hora" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="evento">Título do Evento</label>
+                        <input type="text" id="evento" class="form-control" placeholder="Ex: Assembleia Geral Ordinária" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="local">Formato da Assembleia</label>
+                        <select id="local" class="form-control" required>
+                            <option value="">Selecione o formato</option>
+                            <option>Presencial</option>
+                            <option>Virtual</option>
+                            <option>Híbrida</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Assembleia</label>
+                        <select id="tipo" class="form-control" required>
+                            <option value="">Selecione o tipo</option>
+                            <option>Ordinária</option>
+                            <option>Extraordinária</option>
+                            <option>Instalação</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="responsavel">Responsável</label>
+                        <input type="text" id="responsavel" class="form-control" placeholder="Nome do responsável" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pautas (máximo 10)</label>
+                        <div class="pautas-container" id="pautasContainer">
+                            <!-- Pautas serão adicionadas dinamicamente -->
+                        </div>
+                        <button class="btn btn-accent" id="addPautaBtn">
+                            <i class="fas fa-plus"></i> Adicionar Pauta
+                        </button>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" type="submit" id="saveAssemblyBtn">
+                            <i class="fas fa-save"></i> Salvar Assembleia
+                        </button>
+                        <button class="btn btn-secondary" type="reset" id="resetBtn">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gantt Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Acompanhamento de Registro de Atas</h2>
+                    <button class="btn btn-secondary" id="showHistoryBtn">
+                        <i class="fas fa-history"></i> Histórico
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="gantt-container" id="ganttContainer">
+                        <!-- Gantt será preenchido dinamicamente -->
+                    </div>
+
+                    <div class="gantt-details">
+                        <h3>Detalhes do Processo</h3>
+                        <div class="detail-item">
+                            <div class="detail-label">Condomínio:</div>
+                            <div class="detail-value" id="condominioName">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Status Atual:</div>
+                            <div class="detail-value" id="currentStatus">Ata pendente</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Próxima Etapa:</div>
+                            <div class="detail-value" id="nextStep">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Última Atualização:</div>
+                            <div class="detail-value" id="lastUpdate">-</div>
+                        </div>
+                        <div class="detail-item">
+    			<div class="detail-label">Responsável:</div>
+    			<div class="detail-value"><strong>Departamento Jurídico</strong></div>
+			</div>
+
+
+                        <div class="detail-item progress">
+                            <div class="detail-label">Progresso:</div>
+                            <div class="detail-value" id="progressValue">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de Agendamentos do Mês -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Agendamentos do Mês</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table id="agendamentosTable">
+                        <thead>
+                            <tr>
+                                <th>Condomínio</th>
+                                <th>Data</th>
+                                <th>Hora</th>
+                                <th>Evento</th>
+                                <th>Formato</th>
+                                <th>Tipo</th>
+                                <th>Responsável</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="agendamentosBody">
+                            <!-- Preenchido por JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Calendário de Assembleias</h2>
+            </div>
+            <div class="card-body">
+                <div class="calendar-header">
+                    <button onclick="changeMonth(-1)">&larr; Mês Anterior</button>
+                    <h2 id="calendarTitle">Agosto 2025</h2>
+                    <button onclick="changeMonth(1)">Próximo Mês &rarr;</button>
+                </div>
+                <div class="weekdays">
+                    <div class="weekday">Segunda</div>
+                    <div class="weekday">Terça</div>
+                    <div class="weekday">Quarta</div>
+                    <div class="weekday">Quinta</div>
+                    <div class="weekday">Sexta</div>
+                    <div class="weekday">Sábado</div>
+                    <div class="weekday">Domingo</div>
+                </div>
+                <div class="calendar" id="calendar">
+                    <!-- Calendar days will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para assinaturas -->
+    <div class="modal" id="signatureModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Registro de Assinaturas</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div>
+               <div class="form-group">
+    
+<div class="form-group">
+    <label>Presidente da Mesa</label>
+    <input type="text" id="presidente" class="form-control" placeholder="Nome completo">
+    <input type="tel" 
+           id="presidente-telefone" 
+           class="form-control mt-2" 
+           placeholder="(XX) XXXXX-XXXX"
+           pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
+           inputmode="numeric"
+           autocomplete="tel"
+           onkeypress="return event.charCode >= 48 && event.charCode <= 57"> <!-- BLOQUEIA LETRAS -->
+</div>
+
+<div class="form-group">
+    <label>Síndico</label>
+    <input type="text" id="sindico" class="form-control" placeholder="Nome completo">
+    <input type="tel" 
+           id="sindico-telefone" 
+           class="form-control mt-2" 
+           placeholder="(XX) XXXXX-XXXX"
+           pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
+           inputmode="numeric"
+           autocomplete="tel"
+	   onkeypress="return event.charCode >= 48 && event.charCode <= 57"> <!-- BLOQUEIA LETRAS -->
+</div>
+
+<div class="form-group">
+    <label>Secretário</label>
+    <input type="text" id="secretario" class="form-control" placeholder="Nome completo">
+    <input type="tel" 
+           id="secretario-telefone" 
+           class="form-control mt-2" 
+           placeholder="(XX) XXXXX-XXXX"
+           pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
+           inputmode="numeric"
+           autocomplete="tel"
+	   onkeypress="return event.charCode >= 48 && event.charCode <= 57"> <!-- BLOQUEIA LETRAS -->
+
+</div>
+                <div class="form-group">
+                    <label>Responsável pela Documentação</label>
+                    <input type="text" id="responsavelDoc" class="form-control" placeholder="Nome completo">
+                </div>
+                <div class="btn-group" style="margin-top: 20px;">
+                    <button class="btn" id="saveSignatures">
+                        <i class="fas fa-save"></i> Salvar Assinaturas
+                    </button>
+                    <button class="btn btn-secondary" id="cancelSignatures">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para histórico -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Histórico do Processo</h3>
+                <button class="close-modal" id="closeHistoryModal">&times;</button>
+            </div>
+            <div id="historyContent">
+                <!-- Conteúdo do histórico será preenchido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para atualização de atas -->
+    <div class="modal" id="updateAtasModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Atualizar Situação das Atas</h3>
+                <button class="close-modal" id="closeAtasModal">&times;</button>
+            </div>
+            <div id="updateAtasContent">
+                <!-- Conteúdo dinâmico será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de alerta -->
+    <div class="alert-modal" id="alertModal">
+        <div class="alert-content">
+            <h3 class="alert-title" id="alertTitle">Atenção!</h3>
+            <p class="alert-message" id="alertMessage"></p>
+            <button class="alert-btn" id="closeAlert">OK</button>
+        </div>
+    </div>
+
+    <!-- Modal de Gerenciamento de Condomínios -->
+    <div class="modal" id="condominiosModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Gerenciar Condomínios</h3>
+                <button class="close-modal" id="closeCondominiosModal">&times;</button>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="condominioNome">Nome do Condomínio</label>
+                    <input type="text" id="condominioNome" class="form-control" placeholder="Nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="condominioCnpj">CNPJ</label>
+                    <input type="text" id="condominioCnpj" class="form-control" placeholder="CNPJ">
+                </div>
+                <div class="form-group">
+                    <label for="condominioSindico">Nome do Síndico</label>
+                    <input type="text" id="condominioSindico" class="form-control" placeholder="Nome do síndico">
+                </div>
+                <div class="form-group">
+                    <label for="condominioInicioMandato">Início do Mandato</label>
+                    <input type="date" id="condominioInicioMandato" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="condominioFimMandato">Fim do Mandato</label>
+                    <input type="date" id="condominioFimMandato" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <div>
+                        <input type="checkbox" id="condominioAtivo" checked>
+                        <label for="condominioAtivo">Ativo</label>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="saveCondominioBtn">
+                        <i class="fas fa-save"></i> Salvar Condomínio
+                    </button>
+                </div>
+
+                <div class="table-container" style="margin-top: 30px; max-height: 400px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>CNPJ</th>
+                                <th>Síndico</th>
+                                <th>Mandato</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="condominiosList">
+                            <!-- Lista de condomínios será preenchida aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Detalhes da Assembleia -->
+    <div class="modal" id="assemblyModal">
+        <div class="assembly-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes da Assembleia</h3>
+                <button class="close-modal" id="closeAssemblyModal">&times;</button>
+            </div>
+            
+            <!-- Abas -->
+            <div class="tabs">
+                <button class="tab-button active" data-tab="details">Detalhes</button>
+                <button class="tab-button" data-tab="ata">Registro de Ata</button>
+            </div>
+            
+            <div id="assemblyDetails" class="tab-content active" data-tab="details">
+                <!-- Detalhes da assembleia serão preenchidos aqui -->
+            </div>
+            
+            <div id="assemblyAta" class="tab-content" data-tab="ata">
+                <div class="gantt-container" id="modalGanttContainer">
+                    <!-- Gráfico Gantt será inserido aqui -->
+                </div>
+                <div class="progress-container">
+                    <div>Progresso do Registro:</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div id="progressText">0% concluído</div>
+                </div>
+                <div class="gantt-controls">
+                    <button class="btn btn-accent" id="modalRestartBtn">
+                        <i class="fas fa-redo"></i> Reiniciar Processo
+                    </button>
+                    <button class="btn" id="modalEditAtasBtn">
+                        <i class="fas fa-edit"></i> Editar Situação das Atas
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== VARIÁVEIS GLOBAIS =====
+        let agenda = [];
+        let currentGanttIndex = -1;
+        let currentAssemblyId = null;
+        let currentEditId = null;
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let condominios = [];
+        const pautasContainer = document.getElementById('pautasContainer');
+        const condominioSelect = document.getElementById('condominio');
+
+        // ===== FUNÇÕES MOBILE =====
+        // Verifica se é dispositivo móvel
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // Solicita permissão para notificações
+        function enableNotifications() {
+            if ('Notification' in window && Notification.permission !== 'granted') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Notificações ativadas!');
+                        showNotification('App instalado', 'Você receberá lembretes de assembleias');
+                    }
+                });
+            }
+        }
+
+        // Mostra notificação
+        function showNotification(title, message) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, { 
+                    body: message,
+                    icon: 'icons/icon-192x192.png'
+                });
+            }
+        }
+
+        // Adiciona evento ao calendário
+        function addToCalendar(assembly) {
+            const startDate = new Date(`${assembly.data}T${assembly.hora}`);
+            const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000); // +2 horas
+            
+            const calendarEvent = {
+                title: `Assembleia: ${assembly.condominio}`,
+                description: `Pautas:\n${assembly.pautas.join('\n')}\n\nResponsável: ${assembly.responsavel}`,
+                start: startDate,
+                end: endDate,
+                location: assembly.local.includes('Presencial') ? 'Condomínio' : 'Online'
+            };
+
+            if (window.navigator.share) {
+                navigator.share({
+                    title: calendarEvent.title,
+                    text: calendarEvent.description,
+                    url: window.location.href
+                });
+            } else {
+                const dates = `${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}`;
+                window.open(`https://www.google.com/calendar/render?action=TEMPLATE&dates=${dates}&text=${encodeURIComponent(calendarEvent.title)}&details=${encodeURIComponent(calendarEvent.description)}&location=${encodeURIComponent(calendarEvent.location)}`);
+            }
+        }
+
+        // ===== GERADOR DE ID ÚNICO =====
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // ===== AGENDA DE ASSEMBLEIAS =====
+        
+        // Feriados
+        const holidays = [
+            { date:'2025-08-15', name:'Aniversário de Sorocaba', type:'Comemorativo' },
+            { date:'2025-08-10', name:'Dia dos Pais', type:'Comemorativo' },
+            { date:'2025-09-07', name:'Independência do Brasil', type:'Federal' },
+            { date:'2025-10-12', name:'Nossa Senhora Aparecida', type:'Federal' },
+            { date:'2025-11-15', name:'Proclamação da República', type:'Federal' },
+            { date:'2025-12-25', name:'Natal', type:'Federal' },
+        ];
+
+        // Fases do processo de registro de atas
+        const initialPhases = [
+            { 
+                name: "Elaboração da Ata", 
+                description: "Redação do documento completo com todas as decisões da assembleia",
+                status: "pendente",
+                dataInicio: "",
+                dataConclusao: "",
+                responsavel: ""
+            },
+            { 
+                name: "Revisão Documental", 
+                description: "Análise técnica e jurídica do documento",
+                status: "pendente",
+                dataInicio: "",
+                dataConclusao: "",
+                responsavel: ""
+            },
+            { 
+                name: "Junção de Documentos", 
+                description: "Reunião de todos os documentos complementares necessários",
+                status: "pendente",
+                dataInicio: "",
+                dataConclusao: "",
+                responsavel: ""
+            },
+            { 
+                name: "Upload na Plataforma", 
+                description: "Submissão na centralonrtdpj para registro",
+                status: "pendente",
+                dataInicio: "",
+                dataConclusao: "",
+                responsavel: ""
+            },
+            { 
+                name: "Análise e Notas", 
+                description: "Avaliação pelo órgão registrador e possíveis devolutivas",
+                status: "pendente",
+                dataInicio: "",
+                dataConclusao: "",
+                responsavel: ""
+            },
+            { 
+                name: "Pagamento de Taxas", 
+                description: "Quitação das taxas de registro",
+                status: "pendente",
+                dataInicio: "",
+                dataConclusao: "",
+                responsavel: ""
+            },
+            { 
+                name: "Registro Final", 
+                description: "Obtenção do registro oficial",
+                status: "pendente",
+                dataInicio: "",
+                dataConclusao: "",
+                responsavel: ""
+            },
+            { 
+                name: "Download da Ata", 
+                description: "Disponibilização da ata concluída para download",
+                status: "pendente",
+                dataInicio: "",
+                dataConclusao: "",
+                responsavel: ""
+            }
+        ];
+
+        // Dados iniciais de condomínios
+        const originalcondominios = [
+            { nome: "ASSOCIAÇÃO DE MORADORES RESIDENCIAL HORTO FLORESTAL II", cnpj: "11.075.811/0001-78", sindico: "ROSANGELA PERECINI", inicioMandato: "2023-12-01", fimMandato: "2025-12-01", ativo: true },
+            { nome: "ASSOCIAÇÃO DOS TITULARES DE DIREITOS R. L. I. L. JARDIM VILA INGLESA", cnpj: "04.998.377/0001-32", sindico: "LUIZ FERNANDO RAMOS SCHUBERT", inicioMandato: "2025-01-01", fimMandato: "2026-12-31", ativo: true },
+            { nome: "BELLA FIORI RESIDENCIAL", cnpj: "50.694.979/0001-13", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2025-01-01", fimMandato: "2027-02-21", ativo: true },
+            { nome: "COND. PROFESSORA DENISE", cnpj: "33.325.455/0001-36", sindico: "GILBERTO BORGES DE CASTILHO", inicioMandato: "2024-03-26", fimMandato: "2026-03-26", ativo: true },
+            { nome: "CONDOMINIO DO EDIFICIO RESIDENCIAL BEATRIZ", cnpj: "05.495.686/0001-52", sindico: "QUÉREN CASSIANO DE ARAUJO DA SILVA", inicioMandato: "2025-05-29", fimMandato: "2027-05-30", ativo: true },
+            { nome: "CONDOMÍNIO EDIFÍCIO LE BARON", cnpj: "41.746.960/0001-82", sindico: "EDSON TADEU SPIAZZI", inicioMandato: "2025-03-17", fimMandato: "2027-03-17", ativo: true },
+            { nome: "CONDOMINIO EDIFICIO ABILIO ALVARENGA DA SILVA", cnpj: "04.569.509/0001-00", sindico: "JOSÉ ROBERTP GALVANI", inicioMandato: "2025-06-29", fimMandato: "2026-06-01", ativo: true },
+            { nome: "CONDOMÍNIO EDIFÍCIO ALPHA BETA E GAMA", cnpj: "50.859.058/0001-63", sindico: "QUÉREN CASSIANO DE ARAUJO DA SILVA", inicioMandato: "2025-03-31", fimMandato: "2027-03-31", ativo: true },
+            { nome: "CONDOMINIO EDIFICIO ATENAS", cnpj: "15.510.483/0001-41", sindico: "VICTOR CARDOSO PEGORARO", inicioMandato: "2024-02-09", fimMandato: "2026-02-09", ativo: true },
+            { nome: "CONDOMINIO EDIFICIO JARDIM DAS VIOLETAS", cnpj: "42.934.668/0001-56", sindico: "QUÉREN CASSIANO DE ARAUJO DA SILVA", inicioMandato: "2023-12-18", fimMandato: "2025-12-18", ativo: true },
+            { nome: "CONDOMINIO EDIFICIO MARIANA", cnpj: "07.024.578/0001-27", sindico: "LUIS FERNANDO MORAIES DA SILVA", inicioMandato: "2024-12-16", fimMandato: "2026-12-16", ativo: true },
+            { nome: "CONDOMINIO PARQUE SINFONIA", cnpj: "26.285.540/0001-52", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2025-04-09", fimMandato: "2027-04-09", ativo: true },
+            { nome: "CONDOMINIO RENASCENÇA", cnpj: "05.404.198/0001-92", sindico: "HELOISA LOPES LOURENÇO BORBA", inicioMandato: "2022-10-17", fimMandato: "2026-10-17", ativo: true },
+            { nome: "CONDOMINIO RESERVA DO LAGO", cnpj: "18.177.654/0001-50", sindico: "RAFAEL LEITE HADDAD", inicioMandato: "2024-10-09", fimMandato: "2026-10-09", ativo: true },
+            { nome: "CONDOMÍNIO RESIDENCIAL SPAZIO SARTORI", cnpj: "27.758.474/0001-53", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2023-11-29", fimMandato: "2025-11-29", ativo: true },
+            { nome: "CONDOMINIO RESIDENCIAL ALPHA PARQUE", cnpj: "19.802.771/0001-20", sindico: "FERNANDO DOS SANTOS SOARES", inicioMandato: "2024-08-01", fimMandato: "2025-09-01", ativo: true },
+            { nome: "CONDOMINIO RESIDENCIAL ANA CRISTINA", cnpj: "03.847.128/0001-83", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2025-03-11", fimMandato: "2027-03-11", ativo: true },
+            { nome: "CONDOMINIO RESIDENCIAL BELA VISTA", cnpj: "24.889.181/0001-17", sindico: "IVAN ROBERTO DE M.GONÇALVES", inicioMandato: "2021-12-21", fimMandato: "2025-12-21", ativo: true },
+            { nome: "CONDOMINIO RESIDENCIAL ESPANHA", cnpj: "13.244.969/0001-50", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2023-08-31", fimMandato: "2025-08-31", ativo: true },
+            { nome: "CONDOMINIO RESIDENCIAL FORUM NOVO", cnpj: "60.119.849/0001-00", sindico: "ANDREA MORAES CUNHA", inicioMandato: "2024-10-31", fimMandato: "2026-10-30", ativo: true },
+            { nome: "CONDOMINIO RESIDENCIAL MANCHESTER", cnpj: "50.827.484/0001-15", sindico: "VALDIR MANOEL DA SILVA", inicioMandato: "2023-10-25", fimMandato: "2025-10-24", ativo: true },
+            { nome: "CONDOMINIO RESIDENCIAL SUN PLACE", cnpj: "26.303.369/0001-67", sindico: "QUÉREN CASSIANO DE ARAUJO DA SILVA", inicioMandato: "2025-03-01", fimMandato: "2026-03-01", ativo: true },
+            { nome: "CONDOMINIO RESIDENCIAL VOLPI", cnpj: "30.599.190/0001-76", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2024-11-13", fimMandato: "2026-11-13", ativo: true },
+            { nome: "CONDOMINIO SITIO DAS HORTENSIAS", cnpj: "58.975.939/0001-51", sindico: "", inicioMandato: "", fimMandato: "", ativo: true },
+            { nome: "CONDOMINIO VILAGIO VILLE", cnpj: "40.227.835/0001-01", sindico: "MARIANE ALBERGONI DE LIMA", inicioMandato: "2022-11-07", fimMandato: "2026-12-11", ativo: true },
+            { nome: "CONDOMINIO VILLA D'ACQUA", cnpj: "05.420.910/0001-47", sindico: "ROBERTO VAGNER GIMENES", inicioMandato: "2024-12-07", fimMandato: "2026-12-07", ativo: true },
+            { nome: "CONJ RESIDENCIAL EDIFICIO TURQUESA", cnpj: "23.337.622/0001-05", sindico: "MARCELO RIBEIRO QUEIROZ", inicioMandato: "2023-12-01", fimMandato: "2025-12-01", ativo: true },
+            { nome: "CONJ. RES. EDIFÍCIO DIAMANTE", cnpj: "25.183.117/0001-89", sindico: "TIAGO DE LARA RODRIGUES", inicioMandato: "2022-08-11", fimMandato: "2026-08-12", ativo: true },
+            { nome: "CONJ. RES. EDIFÍCIO ESMERALDA", cnpj: "23.960.292/0001-00", sindico: "MURILO MARIANO RODRIGUES DA SILVA", inicioMandato: "2024-11-02", fimMandato: "2026-08-20", ativo: true },
+            { nome: "CONJUNTO HABITACIONAL DOUTOR ELISEU RODRIGUES VIEIRA", cnpj: "34.606.173/0001-70", sindico: "LUCIANA PEREIRA RODRIGUES", inicioMandato: "2025-07-21", fimMandato: "2027-04-14", ativo: true },
+            { nome: "CONJUNTO RESIDENCIAL ANTENOR BADDINI", cnpj: "66.844.432/0001-97", sindico: "MARCO ANTÔNIO DE LIMA", inicioMandato: "2024-10-24", fimMandato: "2026-10-24", ativo: true },
+            { nome: "EDIFÍCIO ESTRELA DALVA", cnpj: "42.115.736/0001-55", sindico: "RONIE LEFLOCH BARBOSA JUNIOR", inicioMandato: "2024-02-05", fimMandato: "2026-02-05", ativo: true },
+            { nome: "EDIFÍCIO MARIA FERNANDA", cnpj: "50.818.118/0001-08", sindico: "ANDREA MORAES CUNHA", inicioMandato: "2023-03-13", fimMandato: "2027-03-27", ativo: true },
+            { nome: "EDIFICIO MONA", cnpj: "42.947.232/0001-00", sindico: "", inicioMandato: "", fimMandato: "", ativo: true },
+            { nome: "EDIFICIO MORADA MANCHESTER", cnpj: "31.872.610/0001-09", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2025-06-16", fimMandato: "2027-06-16", ativo: true },
+            { nome: "EDIFÍCIO PRIMAVERA", cnpj: "19.621.445/0001-17", sindico: "VICTOR CARDOSO PEGORARO", inicioMandato: "", fimMandato: "", ativo: true },
+            { nome: "EDIFICIO SAO GUILHERME", cnpj: "22.981.060/0001-75", sindico: "QUÉREN CASSIANO DE ARAUJO DA SILVA", inicioMandato: "2025-07-19", fimMandato: "2027-07-19", ativo: true },
+            { nome: "EDIFICIO VICTORIA I E VICTORIA II", cnpj: "01.635.898/0001-37", sindico: "REGINALDO APARECIDO ACCA", inicioMandato: "2022-12-01", fimMandato: "2025-11-30", ativo: true },
+            { nome: "GRAND TERRACE TRUJILLO", cnpj: "44.406.872/0001-20", sindico: "ARIOVALDO ANDRADE ALMEIDA", inicioMandato: "2022-11-03", fimMandato: "2025-11-03", ativo: true },
+            { nome: "ILHA DE MALAGA", cnpj: "20.519.457/0001-14", sindico: "", inicioMandato: "", fimMandato: "", ativo: true },
+            { nome: "NATURAL PARK RESIDENCIAL", cnpj: "41.264.039/0001-01", sindico: "ANDREA FUMAGALLI", inicioMandato: "2025-03-14", fimMandato: "2026-03-14", ativo: true },
+            { nome: "OLGA VERT RESIDENCIAL CLUBE", cnpj: "11.411.023/0001-05", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2025-02-24", fimMandato: "2026-03-23", ativo: true },
+            { nome: "RESIDENCIAL BELLA EUROPA", cnpj: "09.010.709/0001-42", sindico: "HUGO LEONARDO MENDES BATALHA", inicioMandato: "2024-10-08", fimMandato: "2026-10-08", ativo: true },
+            { nome: "RESIDENCIAL BUTIA", cnpj: "25.020.970/0001-80", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "2025-05-05", fimMandato: "2027-02-05", ativo: true },
+            { nome: "RESIDENCIAL CAMPO BELLO", cnpj: "23.009.747/0001-06", sindico: "", inicioMandato: "", fimMandato: "", ativo: true },
+            { nome: "RESIDENCIAL CAMPOS DO CONDE", cnpj: "59.602.137/0001-69", sindico: "VICTOR CARDOSO PEGORARO", inicioMandato: "2025-04-01", fimMandato: "2026-06-11", ativo: true },
+            { nome: "RESIDENCIAL CATARINA XVIII", cnpj: "45.375.248/0001-75", sindico: "MATHEUS NASCIMENTO RIBEIRO", inicioMandato: "2024-12-19", fimMandato: "2025-12-19", ativo: true },
+            { nome: "RESIDENCIAL COMENDADOR RODOVALHO", cnpj: "04.136.277/0001-05", sindico: "ARMANDO ADRIANO BARBOZA", inicioMandato: "2023-07-01", fimMandato: "2025-07-31", ativo: true },
+            { nome: "RESIDENCIAL DALIAS", cnpj: "53.996.808/0001-37", sindico: "WILSONL NUNES VIANA FILHO", inicioMandato: "2025-05-19", fimMandato: "2027-07-19", ativo: true },
+            { nome: "RESIDENCIAL ESPERANZA", cnpj: "60.276.364/0001-20", sindico: "MARCOS DA SILVA ALBUQUERQUE", inicioMandato: "2025-03-20", fimMandato: "2027-03-20", ativo: true },
+            { nome: "RESIDENCIAL FLAMBOYANT", cnpj: "37.920.094/0001-27", sindico: "ANDREA MORAES CUNHA", inicioMandato: "2023-10-01", fimMandato: "2025-10-01", ativo: true },
+            { nome: "RESIDENCIAL FLECHEIRAS", cnpj: "45.015.530/0001-41", sindico: "MATHEUS HENRIQUE DE LIMA SOUSA SANTANA", inicioMandato: "2025-07-28", fimMandato: "2027-07-24", ativo: true },
+            { nome: "RESIDENCIAL HORTO FLAMBOYANT", cnpj: "23.044.181/0001-53", sindico: "WELINGTON TEXEIRA DA SILVA", inicioMandato: "2023-09-22", fimMandato: "2025-09-21", ativo: true },
+            { nome: "RESIDENCIAL JARDIM DO EDEN", cnpj: "20.680.719/0001-28", sindico: "PRISCILA FABIANA APARECIDA RIBEIRO", inicioMandato: "2024-11-08", fimMandato: "2026-11-08", ativo: true },
+            { nome: "RESIDENCIAL MARIA EDUARDA", cnpj: "05.495.719/0001-64", sindico: "QUÉREN CASSIANO DE ARAUJO DA SILVA", inicioMandato: "2023-05-27", fimMandato: "2026-05-31", ativo: true },
+            { nome: "RESIDENCIAL OLYMPIA", cnpj: "39.505.113/0001-84", sindico: "CINTIA JOSIANE PEREIRA FURTADO", inicioMandato: "2020-07-24", fimMandato: "2027-03-13", ativo: true },
+            { nome: "RESIDENCIAL PRACA VERDE", cnpj: "32.332.920/0001-01", sindico: "VALDIR MANOEL DA SILVA", inicioMandato: "2025-07-24", fimMandato: "2027-07-24", ativo: true },
+            { nome: "RESIDENCIAL SÃO LOURENÇO", cnpj: "31.245.644/0001-73", sindico: "MARCOS ANTÔNIO MEDEIROS", inicioMandato: "2024-09-18", fimMandato: "2026-09-18", ativo: true },
+            { nome: "RESIDENCIAL TIÊ", cnpj: "60.996.290/0001-05", sindico: "GUILHERME ROCHA TRINDADE", inicioMandato: "2025-05-10", fimMandato: "2027-05-10", ativo: true },
+            { nome: "RESIDENCIAL TOLEDO", cnpj: "38.045.771/0001-78", sindico: "JOÃO RICARDO FERES", inicioMandato: "2024-11-06", fimMandato: "2026-04-24", ativo: true },
+            { nome: "RESIDENCIAL VALE VERDE WANEL VILLE", cnpj: "54.478.686/0001-50", sindico: "ALESSANDRA NOGUEIRA", inicioMandato: "2024-08-01", fimMandato: "2025-10-23", ativo: true },
+            { nome: "RESIDENCIAL VIENA", cnpj: "34.212.147/0001-67", sindico: "SÉRGIO LUIZ BRAGA DE FREITAS", inicioMandato: "2021-05-14", fimMandato: "2027-05-14", ativo: true },
+            { nome: "RESIDENCIAL VILA HAYMAN", cnpj: "28.993.310/0001-73", sindico: "MARIANA CAROLINA DE OLIVEIRA", inicioMandato: "", fimMandato: "", ativo: true },
+            { nome: "UNICO CONDOMÍNIO CLUBE", cnpj: "23.009.747/0001-06", sindico: "IVAN ROBERTO DE M.GONÇALVES", inicioMandato: "2025-07-07", fimMandato: "2027-07-07", ativo: true },
+            { nome: "VILA ARVOREDO", cnpj: "22.935.471/0001-24", sindico: "DANIEL C ALBUQUERQUE", inicioMandato: "2024-09-09", fimMandato: "2026-09-09", ativo: true },
+            { nome: "VILLA VIC VOTORANTIM CONDOMINIO SALERNO", cnpj: "60.996.290/0001-05", sindico: "ALLAN SANCHES", inicioMandato: "2025-01-31", fimMandato: "2027-01-30", ativo: true }
+        ];
+
+        // Funções auxiliares
+        function formatDateBR(iso) { 
+            if (!iso) return '-';
+            const [y, m, d] = iso.split('-'); 
+            return `${d}/${m}/${y}`; 
+        }
+        
+        function formatMonthYear(month, year) {
+            const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
+                           "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            return `${months[month]} de ${year}`;
+        }
+
+        // Função para mostrar alerta estilizado
+        function showAlert(title, message) {
+            document.getElementById('alertTitle').textContent = title;
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertModal').style.display = 'flex';
+        }
+
+        // Fechar alerta
+        document.getElementById('closeAlert').addEventListener('click', () => {
+            document.getElementById('alertModal').style.display = 'none';
+        });
+
+        // Função para resetar o formulário
+        function resetForm() {
+            document.getElementById('condominio').value = '';
+            document.getElementById('data').value = '';
+            document.getElementById('hora').value = '';
+            document.getElementById('evento').value = '';
+            document.getElementById('local').value = '';
+            document.getElementById('tipo').value = '';
+            document.getElementById('responsavel').value = '';
+            pautasContainer.innerHTML = '';
+            addPautaField();
+            currentEditId = null;
+        }
+
+        // Adicionar campo de pauta
+        function addPautaField(value = '') {
+            if (pautasContainer.children.length >= 10) {
+                showAlert('Limite Atingido', 'Máximo de 10 pautas atingido!');
+                return;
+            }
+            
+            const pautaItem = document.createElement('div');
+            pautaItem.className = 'pauta-item';
+            
+            const pautaCount = pautasContainer.children.length + 1;
+            
+            pautaItem.innerHTML = `
+                <div class="pauta-number">${pautaCount}</div>
+                <div class="pauta-content">
+                    <textarea class="form-control pauta-textarea" placeholder="Pauta ${pautaCount}" required>${value}</textarea>
+                    <div class="pauta-actions">
+                        <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+            
+            pautasContainer.appendChild(pautaItem);
+            
+            const editBtn = pautaItem.querySelector('.edit-btn');
+            const deleteBtn = pautaItem.querySelector('.delete-btn');
+            
+            editBtn.addEventListener('click', () => {
+                const textarea = pautaItem.querySelector('textarea');
+                textarea.focus();
+            });
+            
+            deleteBtn.addEventListener('click', () => {
+                if (pautasContainer.children.length > 1) {
+                    pautasContainer.removeChild(pautaItem);
+                    updatePautaNumbers();
+                } else {
+                    showAlert('Atenção', 'É necessário pelo menos uma pauta');
+                }
+            });
+        }
+        
+        // Atualizar numeração das pautas
+        function updatePautaNumbers() {
+            const pautas = pautasContainer.querySelectorAll('.pauta-item');
+            pautas.forEach((pauta, index) => {
+                const number = pauta.querySelector('.pauta-number');
+                number.textContent = index + 1;
+                
+                const textarea = pauta.querySelector('textarea');
+                textarea.placeholder = `Pauta ${index + 1}`;
+            });
+        }
+
+        // ===== GRÁFICO GANTT =====
+        const ganttContainer = document.getElementById('ganttContainer');
+        const showHistoryBtn = document.getElementById('showHistoryBtn');
+        
+        // Renderizar gráfico Gantt para uma assembleia específica
+        function renderGantt(assembly) {
+            if (!assembly) {
+                ganttContainer.innerHTML = '';
+                document.getElementById('condominioName').textContent = '-';
+                document.getElementById('currentStatus').textContent = 'Ata pendente';
+                document.getElementById('nextStep').textContent = '-';
+                document.getElementById('lastUpdate').textContent = '-';
+                document.getElementById('progressValue').textContent = '0%';
+                return;
+            }
+            
+            ganttContainer.innerHTML = '';
+            
+            document.getElementById('condominioName').textContent = assembly.condominio;
+            
+            assembly.phases.forEach((phase, index) => {
+                const row = document.createElement('div');
+                row.className = 'gantt-row';
+                
+                const statusClass = `status-${phase.status}`;
+                const progress = phase.status === 'concluido' ? 100 : 
+                                 phase.status === 'andamento' ? 50 : 0;
+                
+                row.innerHTML = `
+                    <div class="phase-label">
+                        <span class="status-indicator ${statusClass}"></span>
+                        ${phase.name}
+                    </div>
+                    <div class="gantt-bar-container">
+                        <div class="gantt-bar" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="gantt-info">
+                        ${phase.status === 'concluido' ? 'Concluído' : 
+                          phase.status === 'andamento' ? 'Em andamento' : 'Pendente'}
+                    </div>
+                `;
+                
+                ganttContainer.appendChild(row);
+            });
+            
+            updateStatusInfo(assembly);
+            updateDashboardStats();
+        }
+
+        // Concluir etapa
+        function concluirEtapa(index) {
+            const assembly = agenda[currentGanttIndex];
+            const phase = assembly.phases[index];
+            
+            if (phase.status === "concluido") {
+                if (confirm("Esta etapa já está concluída. Deseja alterar o status e o responsável?")) {
+                    const responsavel = prompt("Informe o novo responsável:");
+                    if (responsavel) {
+                        phase.responsavel = responsavel;
+                        phase.dataConclusao = new Date().toISOString().split('T')[0];
+                        renderGantt(assembly);
+                        saveToLocalStorage();
+                    }
+                }
+                return;
+            }
+            
+            const responsavel = prompt("Informe o responsável por concluir esta etapa:");
+            if (responsavel) {
+                phase.status = "concluido";
+                phase.dataConclusao = new Date().toISOString().split('T')[0];
+                phase.responsavel = responsavel;
+                
+                if (index < assembly.phases.length - 1 && assembly.phases[index+1].status === 'pendente') {
+                    assembly.phases[index+1].status = 'andamento';
+                    assembly.phases[index+1].dataInicio = new Date().toISOString().split('T')[0];
+                    
+                    const now = new Date();
+                    const formattedDate = now.toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    assembly.processHistory.push({
+                        date: formattedDate,
+                        action: `Início da etapa: ${assembly.phases[index+1].name}`,
+                        responsavel: responsavel,
+                        condominio: assembly.condominio
+                    });
+                }
+                
+                renderGantt(assembly);
+                saveToLocalStorage();
+            }
+        }
+
+        // Atualizar informações de status
+        function updateStatusInfo(assembly) {
+            if (!assembly) return;
+            
+            document.getElementById('condominioName').textContent = assembly.condominio;
+            
+            const currentPhase = assembly.phases.find(p => p.status === "andamento") || 
+                              assembly.phases.find(p => p.status === "pendente");
+            
+            if (currentPhase) {
+                document.getElementById('currentStatus').textContent = currentPhase.name;
+                
+                const nextIndex = assembly.phases.findIndex(p => p.name === currentPhase.name) + 1;
+                if (nextIndex < assembly.phases.length) {
+                    document.getElementById('nextStep').textContent = assembly.phases[nextIndex].name;
+                } else {
+                    document.getElementById('nextStep').textContent = "Processo concluído";
+                }
+            } else {
+                document.getElementById('currentStatus').textContent = "Concluído";
+                document.getElementById('nextStep').textContent = "-";
+            }
+            
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 
+                now.toLocaleString('pt-BR', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+            const completedPhases = assembly.phases.filter(p => p.status === 'concluido').length;
+            const totalPhases = assembly.phases.length;
+            const progress = Math.round((completedPhases / totalPhases) * 100);
+            document.getElementById('progressValue').textContent = `${progress}%`;
+        }
+
+        // Reiniciar processo
+        function restartProcess() {
+            const assembly = agenda[currentGanttIndex];
+            if (!assembly) return;
+            
+            if (confirm("Tem certeza que deseja reiniciar o processo? Todas as etapas serão resetadas.")) {
+                assembly.phases = JSON.parse(JSON.stringify(initialPhases));
+                assembly.processHistory = [];
+                
+                renderGantt(assembly);
+                saveToLocalStorage();
+            }
+        }
+
+        // Mostrar histórico completo
+        function showHistory() {
+            const historyModal = document.getElementById('historyModal');
+            const historyContent = document.getElementById('historyContent');
+            const assembly = agenda[currentGanttIndex];
+            
+            historyContent.innerHTML = '';
+            
+            if (!assembly) {
+                historyContent.innerHTML = '<p>Nenhuma assembleia selecionada.</p>';
+                historyModal.style.display = 'flex';
+                return;
+            }
+            
+            if (assembly.processHistory.length === 0) {
+                historyContent.innerHTML = '<p>Nenhum registro histórico encontrado para esta assembleia.</p>';
+            } else {
+                assembly.processHistory.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <div class="history-date">${item.date}</div>
+                        <div class="history-details">${item.action}</div>
+                        <div><strong>Responsável:</strong> ${item.responsavel}</div>
+                    `;
+                    historyContent.appendChild(historyItem);
+                });
+            }
+            
+            historyModal.style.display = 'flex';
+        }
+
+        // Fechar modal de histórico
+        document.getElementById('closeHistoryModal').addEventListener('click', () => {
+            document.getElementById('historyModal').style.display = 'none';
+        });
+
+        // Abrir modal de atualização de atas
+        function openUpdateAtasModal() {
+            const assembly = agenda[currentGanttIndex];
+            if (!assembly) {
+                showAlert('Atenção', 'Selecione uma assembleia primeiro!');
+                return;
+            }
+            
+            const updateModal = document.getElementById('updateAtasModal');
+            const updateContent = document.getElementById('updateAtasContent');
+            
+            updateContent.innerHTML = `
+                <div class="phase-selector" id="phaseSelector">
+                    ${assembly.phases.map((phase, index) => 
+                        `<div class="phase-option ${index === 0 ? 'selected' : ''}" 
+                             data-index="${index}">${phase.name}</div>`
+                    ).join('')}
+                </div>
+                
+                <div class="form-group">
+                    <label for="situacaoAtas">Situação</label>
+                    <select id="situacaoAtas" class="form-control">
+                        <option value="pendente">Pendente</option>
+                        <option value="andamento">Em andamento</option>
+                        <option value="concluido">Concluído</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="responsavelAtas">Responsável</label>
+                    <input type="text" id="responsavelAtas" class="form-control" placeholder="Nome do responsável">
+                </div>
+                <div class="modal-btn-group">
+                    <button class="btn btn-secondary" id="cancelAtasBtn">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button class="btn" id="saveAtasBtn">
+                        <i class="fas fa-save"></i> Salvar Atualização
+                    </button>
+                </div>
+            `;
+            
+            const firstPhase = assembly.phases[0];
+            document.getElementById('situacaoAtas').value = firstPhase.status;
+            document.getElementById('responsavelAtas').value = firstPhase.responsavel || '';
+            
+            const phaseOptions = document.querySelectorAll('.phase-option');
+            phaseOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    phaseOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    
+                    const index = parseInt(option.dataset.index);
+                    const phase = assembly.phases[index];
+                    document.getElementById('situacaoAtas').value = phase.status;
+                    document.getElementById('responsavelAtas').value = phase.responsavel || '';
+                });
+            });
+            
+            document.getElementById('saveAtasBtn').addEventListener('click', () => {
+                const selectedOption = document.querySelector('.phase-option.selected');
+                if (!selectedOption) return;
+                
+                const index = parseInt(selectedOption.dataset.index);
+                const situacao = document.getElementById('situacaoAtas').value;
+                const responsavel = document.getElementById('responsavelAtas').value;
+                
+                if (situacao && responsavel) {
+                    const phase = assembly.phases[index];
+                    phase.status = situacao;
+                    phase.responsavel = responsavel;
+                    
+                    if (situacao === "concluido") {
+                        phase.dataConclusao = new Date().toISOString().split('T')[0];
+                    } else if (situacao === "andamento") {
+                        phase.dataInicio = new Date().toISOString().split('T')[0];
+                    }
+                    
+                    const now = new Date();
+                    const formattedDate = now.toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    assembly.processHistory.push({
+                        date: formattedDate,
+                        action: `Atualização de status para: ${situacao} (${phase.name})`,
+                        responsavel: responsavel,
+                        condominio: assembly.condominio
+                    });
+                    
+                    showAlert('Sucesso', 'Situação das atas atualizada com sucesso!');
+                    document.getElementById('updateAtasModal').style.display = 'none';
+                    renderGantt(assembly);
+                    renderCalendar();
+                    updateDashboardStats();
+                    saveToLocalStorage();
+                } else {
+                    showAlert('Atenção', 'Preencha todos os campos!');
+                }
+            });
+            
+            document.getElementById('cancelAtasBtn').addEventListener('click', () => {
+                document.getElementById('updateAtasModal').style.display = 'none';
+            });
+            
+            updateModal.style.display = 'flex';
+        }
+
+        // ===== CALENDÁRIO =====
+        function renderCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            const calendarTitle = document.getElementById('calendarTitle');
+            
+            calendarEl.innerHTML = '';
+            calendarTitle.textContent = new Date(currentYear, currentMonth).toLocaleString('pt-BR', {
+                month: 'long',
+                year: 'numeric'
+            }).toUpperCase();
+            
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const blanks = (firstDay + 6) % 7;
+            
+            for (let i = 0; i < blanks; i++) {
+                const blankDay = document.createElement('div');
+                blankDay.className = 'day blank';
+                calendarEl.appendChild(blankDay);
+            }
+            
+            const days = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            const eventsByDate = {};
+            agenda.forEach((event, index) => {
+                const eventDate = new Date(event.data);
+                if (eventDate.getFullYear() === currentYear && eventDate.getMonth() === currentMonth) {
+                    const dd = String(eventDate.getDate()).padStart(2, '0');
+                    const mm = String(eventDate.getMonth() + 1).padStart(2, '0');
+                    const dateStr = `${eventDate.getFullYear()}-${mm}-${dd}`;
+                    
+                    if (!eventsByDate[dateStr]) {
+                        eventsByDate[dateStr] = [];
+                    }
+                    eventsByDate[dateStr].push({...event, index});
+                }
+            });
+            
+            for (let d = 1; d <= days; d++) {
+                const cell = document.createElement('div');
+                cell.className = 'day';
+                const dd = String(d).padStart(2, '0');
+                const mm = String(currentMonth + 1).padStart(2, '0');
+                const dateStr = `${currentYear}-${mm}-${dd}`;
+                
+                cell.innerHTML = `<div class="day-number">${d}</div>`;
+                
+                const today = new Date();
+                if (today.getFullYear() === currentYear && 
+                    today.getMonth() === currentMonth && 
+                    today.getDate() === d) {
+                    cell.classList.add('today');
+                }
+
+                const condominiosComFimMandato = condominios.filter(condominio => {
+                    if (!condominio.fimMandato || !condominio.ativo) return false;
+                    
+                    const dataFimMandato = new Date(condominio.fimMandato);
+                    return (
+                        dataFimMandato.getFullYear() === currentYear &&
+                        dataFimMandato.getMonth() === currentMonth && 
+                        dataFimMandato.getDate() === d
+                    );
+                });
+
+                if (condominiosComFimMandato.length > 0) {
+                    const containerFimMandato = document.createElement('div');
+                    containerFimMandato.className = 'fim-mandato-container';
+                    
+                    condominiosComFimMandato.forEach(condominio => {
+                        const itemFimMandato = document.createElement('div');
+                        itemFimMandato.className = 'fim-mandato-item';
+                        
+                        const dataFormatada = condominio.fimMandato.split('-').reverse().join('/');
+                        
+                        itemFimMandato.innerHTML = `
+                            <div class="fim-mandato-header">
+                                <i class="fas fa-user-clock"></i>
+                                <strong>Fim do Mandato</strong>
+                            </div>
+                            <div class="fim-mandato-body">
+                                <span class="condominio-nome">${condominio.nome}</span>
+                            </div>
+                            <div class="fim-mandato-footer">
+                            </div>
+                        `;
+                        
+                        itemFimMandato.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            showCondominioDetails(condominio);
+                        });
+                        
+                        containerFimMandato.appendChild(itemFimMandato);
+                    });
+                    
+                    cell.appendChild(containerFimMandato);
+                }
+
+                const holiday = holidays.find(h => h.date === dateStr);
+                if (holiday) {
+                    const hl = document.createElement('span');
+                    hl.className = 'holiday-label';
+                    hl.textContent = `${holiday.name}`;
+                    cell.appendChild(hl);
+                }
+                
+                const events = eventsByDate[dateStr] || [];
+                if (events.length > 0) {
+                    events.forEach(eventData => {
+                        const eventEl = document.createElement('div');
+                        eventEl.className = 'event';
+                        eventEl.dataset.index = eventData.index;
+                        
+                        const currentPhase = eventData.phases.find(p => p.status === "andamento") || 
+                                            eventData.phases.find(p => p.status === "pendente");
+                        const status = currentPhase ? currentPhase.name : "Concluído";
+                        
+                        const statusText = eventData.phases[0].status === 'pendente' && 
+                                          eventData.phases.every(p => p.status === 'pendente') ? 
+                                          "Ata pendente" : status;
+                        
+                        const statusIcon = getStatusIcon(eventData);
+                        
+                        eventEl.innerHTML = `
+                            <span class="condominio-name">${eventData.condominio}</span>
+                            <span class="responsavel-name">Responsável: ${eventData.responsavel}</span>
+                            <span class="status-info">
+                                <i class="fas ${statusIcon} status-icon"></i> ${statusText}
+                            </span>
+                        `;
+                        
+                        eventEl.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            currentGanttIndex = eventData.index;
+                            renderGantt(agenda[currentGanttIndex]);
+                            openAssemblyModal(agenda[currentGanttIndex]);
+                        });
+                        
+                        cell.appendChild(eventEl);
+                    });
+                }
+                
+                calendarEl.appendChild(cell);
+            }
+        }
+
+        // Função para obter ícone de status
+        function getStatusIcon(assembly) {
+            const lastPhase = assembly.phases[assembly.phases.length - 1];
+            if (lastPhase.status === 'concluido') {
+                return 'fa-check-circle';
+            } else if (assembly.phases.some(p => p.status === 'andamento')) {
+                return 'fa-spinner';
+            } else {
+                return 'fa-exclamation-circle';
+            }
+        }
+
+        // Mudar mês
+        function changeMonth(offset) {
+            currentMonth += offset;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+            renderAgendamentos();
+            updateDashboardStats();
+            
+            if (currentGanttIndex >= 0 && currentGanttIndex < agenda.length) {
+                const assembly = agenda[currentGanttIndex];
+                const eventDate = new Date(assembly.data);
+                if (eventDate.getMonth() !== currentMonth || eventDate.getFullYear() !== currentYear) {
+                    currentGanttIndex = -1;
+                    renderGantt(null);
+                }
+            }
+        }
+
+        // ===== TABELA DE AGENDAMENTOS DO MÊS =====
+        function renderAgendamentos() {
+            const body = document.getElementById('agendamentosBody');
+            body.innerHTML = '';
+            
+            const eventosMes = agenda.filter(evento => {
+                const eventDate = new Date(evento.data);
+                return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+            });
+            
+            if (eventosMes.length === 0) {
+                body.innerHTML = `<tr><td colspan="8" style="text-align: center;">Nenhum agendamento para este mês</td></tr>`;
+                return;
+            }
+            
+            eventosMes.forEach((evento) => {
+                const globalIndex = agenda.findIndex(a => a.id === evento.id);
+                
+                const tr = document.createElement('tr');
+                tr.className = 'main-row';
+                tr.innerHTML = `
+                    <td>${evento.condominio}</td>
+                    <td>${formatDateBR(evento.data)}</td>
+                    <td>${evento.hora}</td>
+                    <td>${evento.evento}</td>
+                    <td>${evento.local}</td>
+                    <td>${evento.tipo}</td>
+                    <td>${evento.responsavel}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editAssembly('${evento.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteAssembly('${evento.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="action-btn" style="background: #4a86e8; color: white;" 
+                                onclick="openSignatureModal('${evento.id}')">
+                            <i class="fas fa-signature"></i>
+                        </button>
+                        <button class="action-btn" style="background: #28a745; color: white;" 
+                                onclick="openAssemblyModal('${evento.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+                
+                const detailRow = document.createElement('tr');
+                detailRow.className = 'detail-row';
+                detailRow.style.display = 'none';
+                detailRow.innerHTML = `
+                    <td colspan="8" style="padding: 15px; background-color: #f8faff;">
+                        <strong>Pautas:</strong>
+                        <ul class="pautas-list">
+                            ${evento.pautas.map((p, i) => `<li><strong>Pauta ${i+1}:</strong> ${p.replace(/\n/g, '<br>')}</li>`).join('')}
+                        </ul>
+                    </td>
+                `;
+                
+                tr.addEventListener('click', function(e) {
+                    if (!e.target.closest('button')) {
+                        detailRow.style.display = detailRow.style.display === 'none' ? 'table-row' : 'none';
+                    }
+                });
+                
+                body.appendChild(detailRow);
+            });
+        }
+
+        // Editar assembleia
+        function editAssembly(id) {
+            const index = agenda.findIndex(a => a.id === id);
+            if (index === -1) return;
+            
+            const assembly = agenda[index];
+            currentEditId = id;
+            
+            document.getElementById('condominio').value = assembly.condominio;
+            document.getElementById('data').value = assembly.data;
+            document.getElementById('hora').value = assembly.hora;
+            document.getElementById('evento').value = assembly.evento;
+            document.getElementById('local').value = assembly.local;
+            document.getElementById('tipo').value = assembly.tipo;
+            document.getElementById('responsavel').value = assembly.responsavel;
+            
+            pautasContainer.innerHTML = '';
+            assembly.pautas.forEach(pauta => {
+                addPautaField(pauta);
+            });
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Excluir assembleia
+        function deleteAssembly(id) {
+            const index = agenda.findIndex(a => a.id === id);
+            if (index === -1) return;
+            
+            if (confirm('Tem certeza que deseja excluir este agendamento?')) {
+                agenda.splice(index, 1);
+                renderAgendamentos();
+                renderCalendar();
+                updateDashboardStats();
+                saveToLocalStorage();
+            }
+        }
+
+        // Mostrar detalhes do condomínio
+        function showCondominioDetails(condominio) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            modal.style.zIndex = '1000';
+            
+            const modalContent = document.createElement('div');
+            modalContent.className = 'condominio-details-modal';
+            modalContent.style.background = 'white';
+            modalContent.style.borderRadius = '12px';
+            modalContent.style.padding = '20px';
+            modalContent.style.maxWidth = '500px';
+            modalContent.style.width = '90%';
+            modalContent.style.maxHeight = '90vh';
+            modalContent.style.overflowY = 'auto';
+            
+            modalContent.innerHTML = `
+                <div class="condominio-header" style="background: linear-gradient(135deg, #2c3e50, #1a2530); color: white; padding: 20px; position: relative; text-align: center; border-radius: 8px 8px 0 0;">
+                    <h2 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">${condominio.nome}</h2>
+                </div>
+                
+                <div class="condominio-info" style="padding: 20px;">
+                    <div class="info-card" style="display: flex; align-items: center; gap: 15px; padding: 15px; margin-bottom: 15px; background: #f8f9fa; border-radius: 10px;">
+                        <div class="info-icon" style="font-size: 1.8rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #eef2f7; border-radius: 50%;">👤</div>
+                        <div>
+                            <div class="info-label" style="font-weight: 600; color: #7f8c8d; font-size: 0.95rem; margin-bottom: 3px;">Síndico</div>
+                            <div class="info-value" style="font-weight: 500; color: #2c3e50; font-size: 1.1rem;">${condominio.sindico || 'Não informado'}</div>
+                        </div>
+                    </div>
+                    
+                                
+            <div class="mandato-section" style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #e0e0e0;">
+                <div class="section-title" style="font-weight: 600; color: #2c3e50; font-size: 1.2rem; margin-bottom: 15px; text-align: center;">Período do Mandato</div>
+                <div class="mandato-period" style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
+                    <div class="period-card" style="flex: 1; display: flex; flex-direction: column; align-items: center; padding: 15px; background: #edf7ff; border-radius: 10px; border: 1px solid #d0e8ff; text-align: center;">
+                        <div class="period-icon" style="font-size: 1.8rem; margin-bottom: 10px; color: #3498db;">📅</div>
+                        <div>
+                            <div class="period-label" style="font-weight: 500; color: #7f8c8d; font-size: 0.95rem; margin-bottom: 5px;">Início</div>
+                            <div class="period-value" style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">${condominio.inicioMandato ? formatDateBR(condominio.inicioMandato) : 'Não definido'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="period-divider" style="color: #95a5a6; font-size: 1.5rem; padding: 0 5px;">→</div>
+                    
+                    <div class="period-card" style="flex: 1; display: flex; flex-direction: column; align-items: center; padding: 15px; background: #edf7ff; border-radius: 10px; border: 1px solid #d0e8ff; text-align: center;">
+                        <div class="period-icon" style="font-size: 1.8rem; margin-bottom: 10px; color: #3498db;">📅</div>
+                        <div>
+                            <div class="period-label" style="font-weight: 500; color: #7f8c8d; font-size: 0.95rem; margin-bottom: 5px;">Término</div>
+                            <div class="period-value" style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">${condominio.fimMandato ? formatDateBR(condominio.fimMandato) : 'Não definido'}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="this.closest('.modal').remove()" style="padding: 10px 20px; background: #003366; color: white; border: none; border-radius: 8px; cursor: pointer;">Fechar</button>
+        </div>
+    `;
+    
+    // Adicionar ao DOM
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Fechar ao clicar fora do conteúdo
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+
+        // Abrir modal de assinaturas
+        function openSignatureModal(id) {
+            const signatureModal = document.getElementById('signatureModal');
+            signatureModal.style.display = 'flex';
+            currentAssemblyId = id;
+        }
+
+        // Fechar modais
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('signatureModal').style.display = 'none';
+        });
+
+        document.getElementById('closeAtasModal').addEventListener('click', () => {
+            document.getElementById('updateAtasModal').style.display = 'none';
+        });
+
+        document.getElementById('cancelSignatures').addEventListener('click', () => {
+            document.getElementById('signatureModal').style.display = 'none';
+        });
+
+        // Salvar assinaturas
+        document.getElementById('saveSignatures').addEventListener('click', () => {
+            const presidente = document.getElementById('presidente').value;
+            const sindico = document.getElementById('sindico').value;
+            const secretario = document.getElementById('secretario').value;
+            const responsavelDoc = document.getElementById('responsavelDoc').value;
+            
+            if (presidente && sindico && secretario && responsavelDoc) {
+                // Salvar as assinaturas no objeto da assembleia
+                const assemblyIndex = agenda.findIndex(a => a.id === currentAssemblyId);
+                if (assemblyIndex !== -1) {
+                    agenda[assemblyIndex].signatures = {
+                        presidente,
+                        sindico,
+                        secretario,
+                        responsavelDoc
+                    };
+                    
+                    // Adicionar ao histórico
+                    const now = new Date();
+                    const formattedDate = now.toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    agenda[assemblyIndex].processHistory.push({
+                        date: formattedDate,
+                        action: `Assinaturas registradas para assembleia: ${agenda[assemblyIndex].evento}`,
+                        responsavel: responsavelDoc,
+                        condominio: agenda[assemblyIndex].condominio
+                    });
+                    
+                    showAlert('Sucesso', 'Assinaturas salvas com sucesso!');
+                    document.getElementById('signatureModal').style.display = 'none';
+                    saveToLocalStorage();
+                }
+            } else {
+                showAlert('Atenção', 'Preencha todos os campos de assinatura!');
+            }
+        });
+
+        // ===== IMPRESSÃO =====
+        function printAgendamento(index) {
+            const assembly = agenda[index];
+            
+            // Criar elemento temporário
+            const element = document.createElement('div');
+            element.innerHTML = `
+                <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.1);">
+                    <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #003366; padding-bottom: 20px;">
+                        <h1 style="color: #003366; margin: 0;">Detalhes da Assembleia</h1>
+                        <p style="color: #666; font-size: 14px;">Emitido em: ${new Date().toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h2 style="color: #003366; border-bottom: 1px solid #eee; padding-bottom: 10px;">Informações Gerais</h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                            <div>
+                                <strong>Condomínio:</strong> ${assembly.condominio}
+                            </div>
+                            <div>
+                                <strong>Data:</strong> ${formatDateBR(assembly.data)}
+                            </div>
+                            <div>
+                                <strong>Hora:</strong> ${assembly.hora}
+                            </div>
+                            <div>
+                                <strong>Formato:</strong> ${assembly.local}
+                            </div>
+                            <div>
+                                <strong>Tipo:</strong> ${assembly.tipo}
+                            </div>
+                            <div>
+                                <strong>Responsável:</strong> ${assembly.responsavel}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h2 style="color: #003366; border-bottom: 1px solid #eee; padding-bottom: 10px;">Pautas</h2>
+                        <ol style="padding-left: 20px;">
+                            ${assembly.pautas.map((pauta, i) => 
+                                `<li style="margin-bottom: 12px; line-height: 1.5;">
+                                    <strong>Pauta ${i+1}:</strong><br>
+                                    ${pauta.replace(/\n/g, '<br>')}
+                                </li>`
+                            ).join('')}
+                        </ol>
+                    </div>
+                    
+                    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px dashed #ccc;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div style="width: 45%;">
+                                <p style="border-top: 1px solid #333; padding-top: 5px; margin-top: 60px;">_________________________</p>
+                                <p>Presidente da Mesa</p>
+                            </div>
+                            <div style="width: 45%;">
+                                <p style="border-top: 1px solid #333; padding-top: 5px; margin-top: 60px;">_________________________</p>
+                                <p>Secretário</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Abrir em nova aba
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Detalhes da Assembleia - ${assembly.condominio}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        h1, h2 { color: #003366; }
+                        .print-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+                        .no-print { display: none; }
+                        @media print {
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-container">
+                        ${element.innerHTML}
+                        <div class="no-print" style="text-align: center; margin-top: 30px;">
+                            <button onclick="window.print()" style="padding: 10px 20px; background: #003366; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimir</button>
+                        </div>
+                    </div>
+                                        
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function printAgendamentosMes() {
+            const eventosMes = agenda.filter(evento => {
+                const eventDate = new Date(evento.data);
+                return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+            });
+            
+            if (eventosMes.length === 0) {
+                showAlert('Atenção', 'Não há agendamentos para imprimir neste mês.');
+                return;
+            }
+            
+            // Criar elemento temporário
+            const element = document.createElement('div');
+            element.innerHTML = `
+                <div style="font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.1);">
+                    <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #003366; padding-bottom: 20px;">
+                        <h1 style="color: #003366; margin: 0;">Agendamentos de Assembleias</h1>
+                        <h2 style="color: #4a86e8; margin: 5px 0;">${formatMonthYear(currentMonth, currentYear)}</h2>
+                        <p style="color: #666; font-size: 14px;">Emitido em: ${new Date().toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
+                        <thead>
+                            <tr style="background-color: #003366; color: white;">
+                                <th style="padding: 12px; text-align: left;">Condomínio</th>
+                                <th style="padding: 12px; text-align: left;">Data</th>
+                                <th style="padding: 12px; text-align: left;">Hora</th>
+                                <th style="padding: 12px; text-align: left;">Evento</th>
+                                <th style="padding: 12px; text-align: left;">Formato</th>
+                                <th style="padding: 12px; text-align: left;">Tipo</th>
+                                <th style="padding: 12px; text-align: left;">Responsável</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${eventosMes.map(evento => `
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 12px;">${evento.condominio}</td>
+                                    <td style="padding: 12px;">${formatDateBR(evento.data)}</td>
+                                    <td style="padding: 12px;">${evento.hora}</td>
+                                    <td style="padding: 12px;">${evento.evento}</td>
+                                    <td style="padding: 12px;">${evento.local}</td>
+                                    <td style="padding: 12px;">${evento.tipo}</td>
+                                    <td style="padding: 12px;">${evento.responsavel}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-top: 40px; text-align: center; color: #666; font-size: 13px;">
+                        Sistema de Gestão de Assembleias - Total de ${eventosMes.length} agendamentos
+                    </div>
+                </div>
+            `;
+            
+            // Abrir em nova aba
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Agendamentos de Assembleias - ${formatMonthYear(currentMonth, currentYear)}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        h1, h2 { color: #003366; }
+                        .print-container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+                        .no-print { display: none; }
+                        @media print {
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-container">
+                        ${element.innerHTML}
+                        <div class="no-print" style="text-align: center; margin-top: 30px;">
+                            <button onclick="window.print()" style="padding: 10px 20px; background: #003366; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimir</button>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        // Atualizar estatísticas do dashboard (agora por mês)
+        function updateDashboardStats() {
+            // Filtrar eventos do mês atual
+            const eventosMes = agenda.filter(evento => {
+                const eventDate = new Date(evento.data);
+                return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+            });
+            
+            document.getElementById('totalAssembleias').textContent = eventosMes.length;
+            
+            // Concluídas: quando a última fase está concluída
+            const concluidas = eventosMes.filter(a => 
+                a.phases && a.phases[a.phases.length - 1].status === 'concluido'
+            ).length;
+            
+            // Em andamento: quando pelo menos uma fase está em andamento e a última fase não está concluída
+            const andamento = eventosMes.filter(a => 
+                a.phases && a.phases.some(p => p.status === 'andamento') && 
+                a.phases[a.phases.length - 1].status !== 'concluido'
+            ).length;
+            
+            // Pendentes: quando todas as fases estão pendentes
+            const pendentes = eventosMes.filter(a => 
+                a.phases && a.phases.every(p => p.status === 'pendente')
+            ).length;
+            
+            document.getElementById('atasConcluidas').textContent = concluidas;
+            document.getElementById('atasAndamento').textContent = andamento;
+            document.getElementById('atasPendentes').textContent = pendentes;
+        }
+
+        // ===== GERENCIAMENTO DE CONDOMÍNIOS =====
+        const saveCondominioBtn = document.getElementById('saveCondominioBtn');
+        const condominiosList = document.getElementById('condominiosList');
+        let currentCondominioEditIndex = -1;
+        const manageCondominiosBtn = document.getElementById('manageCondominiosBtn');
+        const closeCondominiosModal = document.getElementById('closeCondominiosModal');
+
+        // Função para renderizar a lista de condomínios
+        function renderCondominios() {
+            condominiosList.innerHTML = '';
+            condominios.forEach((condominio, index) => {
+                const tr = document.createElement('tr');
+                
+                // Formatar datas de mandato
+                const inicioMandato = condominio.inicioMandato ? formatDateBR(condominio.inicioMandato) : '-';
+                const fimMandato = condominio.fimMandato ? formatDateBR(condominio.fimMandato) : '-';
+                
+                tr.innerHTML = `
+                    <td>${condominio.nome}</td>
+                    <td>${condominio.cnpj || '-'}</td>
+                    <td>${condominio.sindico || '-'}</td>
+                    <td>${inicioMandato} a ${fimMandato}</td>
+                    <td>
+                        <span class="status-badge ${condominio.ativo ? 'status-ativo' : 'status-inativo'}">
+                            ${condominio.ativo ? 'Ativo' : 'Inativo'}
+                        </span>
+                    </td>
+                    <td class="condominio-actions">
+                        <button class="action-btn view-btn" onclick="viewCondominio(${index})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit-btn" onclick="editCondominio(${index})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn ${condominio.ativo ? 'off-btn' : 'activate-btn'}" 
+                                onclick="toggleStatusCondominio(${index})">
+                            <i class="fas ${condominio.ativo ? 'fa-toggle-off' : 'fa-toggle-on'}"></i>
+                        </button>
+                    </td>
+                `;
+                condominiosList.appendChild(tr);
+            });
+        }
+
+        // Visualizar condomínio
+        function viewCondominio(index) {
+            const condominio = condominios[index];
+            showAlert(
+                condominio.nome, 
+                `CNPJ: ${condominio.cnpj || 'Não informado'}\nSíndico: ${condominio.sindico || 'Não informado'}\nSíndico: ${condominio.sindico}\nInício Mandato: ${condominio.inicioMandato}\nFim Mandato: ${condominio.fimMandato}\nStatus: ${condominio.ativo ? 'Ativo' : 'Inativo'}`
+            );
+        }
+
+        // Editar condomínio
+        function editCondominio(index) {
+            const condominio = condominios[index];
+            currentCondominioEditIndex = index;
+            
+            document.getElementById('condominioNome').value = condominio.nome || '';
+            document.getElementById('condominioCnpj').value = condominio.cnpj || '';
+            document.getElementById('condominioSindico').value = condominio.sindico || '';
+            document.getElementById('condominioInicioMandato').value = condominio.inicioMandato || '';
+            document.getElementById('condominioFimMandato').value = condominio.fimMandato || '';
+            document.getElementById('condominioAtivo').checked = condominio.ativo;
+        }
+
+        // Alternar status do condomínio
+        function toggleStatusCondominio(index) {
+            condominios[index].ativo = !condominios[index].ativo;
+            renderCondominios();
+            saveToLocalStorage();
+            loadCondominiosInSelect();
+        }
+
+        // Salvar condomínio
+        saveCondominioBtn.addEventListener('click', () => {
+            const nome = document.getElementById('condominioNome').value;
+            const cnpj = document.getElementById('condominioCnpj').value;
+            const sindico = document.getElementById('condominioSindico').value;
+            const inicioMandato = document.getElementById('condominioInicioMandato').value;
+            const fimMandato = document.getElementById('condominioFimMandato').value;
+            const ativo = document.getElementById('condominioAtivo').checked;
+            
+            if (!nome) {
+                showAlert('Atenção', 'O nome do condomínio é obrigatório!');
+                return;
+            }
+            
+            const condominio = {
+                nome, 
+                cnpj, 
+                sindico, 
+                inicioMandato, 
+                fimMandato,
+                ativo
+            };
+            
+            if (currentCondominioEditIndex >= 0) {
+                // Atualizar
+                condominios[currentCondominioEditIndex] = condominio;
+                currentCondominioEditIndex = -1;
+            } else {
+                // Adicionar
+                condominios.push(condominio);
+            }
+            
+            renderCondominios();
+            saveToLocalStorage();
+            loadCondominiosInSelect();
+            
+            // Resetar o formulário
+            document.getElementById('condominioNome').value = '';
+            document.getElementById('condominioCnpj').value = '';
+            document.getElementById('condominioSindico').value = '';
+            document.getElementById('condominioInicioMandato').value = '';
+            document.getElementById('condominioFimMandato').value = '';
+            document.getElementById('condominioAtivo').checked = true;
+            
+            showAlert('Sucesso', 'Condomínio salvo com sucesso!');
+        });
+
+        // Carregar condomínios no select de agendamento
+        function loadCondominiosInSelect() {
+            condominioSelect.innerHTML = '<option value="">Selecione o condomínio</option>';
+            condominios
+                .filter(c => c.ativo) // Apenas condomínios ativos
+                .forEach(condominio => {
+                    const option = document.createElement('option');
+                    option.value = condominio.nome;
+                    option.textContent = condominio.nome;
+                    condominioSelect.appendChild(option);
+                });
+        }
+
+        // Abrir modal de gerenciamento de condomínios
+        manageCondominiosBtn.addEventListener('click', () => {
+            document.getElementById('condominiosModal').style.display = 'flex';
+        });
+        
+        // Fechar modal de gerenciamento de condomínios
+        closeCondominiosModal.addEventListener('click', () => {
+            document.getElementById('condominiosModal').style.display = 'none';
+        });
+
+        // ===== MODAL DE DETALHES DA ASSEMBLEIA =====
+        function openAssemblyModal(id) {
+            const assemblyIndex = agenda.findIndex(a => a.id === id);
+            if (assemblyIndex === -1) return;
+            
+            currentGanttIndex = assemblyIndex;
+            const assembly = agenda[assemblyIndex];
+            
+            const modal = document.getElementById('assemblyModal');
+            const detailsDiv = document.getElementById('assemblyDetails');
+            const ganttContainer = document.getElementById('modalGanttContainer');
+            
+            // Preencher detalhes
+            detailsDiv.innerHTML = `
+                <h3>${assembly.evento}</h3>
+                <p><strong>Condomínio:</strong> ${assembly.condominio}</p>
+                <p><strong>Data:</strong> ${formatDateBR(assembly.data)}</p>
+                <p><strong>Hora:</strong> ${assembly.hora}</p>
+                <p><strong>Formato:</strong> ${assembly.local}</p>
+                <p><strong>Tipo:</strong> ${assembly.tipo}</p>
+                <p><strong>Responsável:</strong> ${assembly.responsavel}</p>
+                <h4>Pautas:</h4>
+                <ol>
+                    ${assembly.pautas.map((p, i) => `<li>${p.replace(/\n/g, '<br>')}</li>`).join('')}
+                </ol>
+                
+                <div style="margin-top: 20px;">
+                    <h4>Assinaturas Registradas:</h4>
+                    <p>
+                        ${assembly.signatures?.presidente ? `<strong>Presidente:</strong> ${assembly.signatures.presidente}<br>` : ''}
+                        ${assembly.signatures?.sindico ? `<strong>Síndico:</strong> ${assembly.signatures.sindico}<br>` : ''}
+                        ${assembly.signatures?.secretario ? `<strong>Secretário:</strong> ${assembly.signatures.secretario}<br>` : ''}
+                        ${assembly.signatures?.responsavelDoc ? `<strong>Responsável pela Documentação:</strong> ${assembly.signatures.responsavelDoc}` : 'Nenhuma assinatura registrada'}
+                    </p>
+                </div>
+            `;
+            
+            // Renderizar o Gantt
+            ganttContainer.innerHTML = '';
+            assembly.phases.forEach((phase, index) => {
+                const row = document.createElement('div');
+                row.className = 'gantt-row';
+                
+                const statusClass = `status-${phase.status}`;
+                const progress = phase.status === 'concluido' ? 100 : 
+                                 phase.status === 'andamento' ? 50 : 0;
+                
+                row.innerHTML = `
+                    <div class="phase-label">
+                        <span class="status-indicator ${statusClass}"></span>
+                        ${phase.name}
+                    </div>
+                    <div class="gantt-bar-container">
+                        <div class="gantt-bar" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="gantt-info">
+                        ${phase.status === 'concluido' ? 'Concluído' : 
+                          phase.status === 'andamento' ? 'Em andamento' : 'Pendente'}
+                    </div>
+                `;
+                
+                ganttContainer.appendChild(row);
+            });
+            
+            // Atualizar barra de progresso
+            const completedPhases = assembly.phases.filter(p => p.status === 'concluido').length;
+            const totalPhases = assembly.phases.length;
+            const progress = Math.round((completedPhases / totalPhases) * 100);
+            
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% concluído`;
+            
+            // Configurar botões
+            document.getElementById('modalRestartBtn').onclick = () => {
+                restartProcess();
+                openAssemblyModal(assembly.id); // Atualizar modal
+            };
+            
+            document.getElementById('modalEditAtasBtn').onclick = () => {
+                openUpdateAtasModal();
+                document.getElementById('assemblyModal').style.display = 'none';
+            };
+            
+            modal.style.display = 'flex';
+        }
+
+        // Fechar modal de detalhes da assembleia
+        document.getElementById('closeAssemblyModal').addEventListener('click', () => {
+            document.getElementById('assemblyModal').style.display = 'none';
+        });
+
+        // Função para trocar de aba no modal de detalhes da assembleia
+        function setupTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabName = button.dataset.tab;
+                    
+                    // Remover classe ativa de todos os botões e conteúdos
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.style.display = 'none';
+                        content.classList.remove('active');
+                    });
+                    
+                    // Ativar a aba clicada
+                    button.classList.add('active');
+                    document.querySelector(`.tab-content[data-tab="${tabName}"]`).style.display = 'block';
+                    document.querySelector(`.tab-content[data-tab="${tabName}"]`).classList.add('active');
+                });
+            });
+        }
+
+        // ===== PERSISTÊNCIA =====
+        // Salvar no localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('agendaData', JSON.stringify({
+                agenda: agenda,
+                currentAssemblyId: currentAssemblyId,
+                condominios: condominios
+            }));
+        }
+
+        // Carregar do localStorage
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('agendaData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                agenda = data.agenda || [];
+                currentAssemblyId = data.currentAssemblyId || 0;
+                condominios = data.condominios || originalcondominios;
+                
+                // Atualizar a interface
+                if (agenda.length > 0) {
+                    currentGanttIndex = 0;
+                    renderGantt(agenda[0]);
+                }
+                
+                renderCondominios();
+                loadCondominiosInSelect();
+                renderCalendar();
+                renderAgendamentos();
+                updateDashboardStats();
+            } else {
+                // Carregar dados iniciais
+                condominios = originalcondominios;
+                renderCondominios();
+                loadCondominiosInSelect();
+                saveToLocalStorage();
+            }
+        }
+
+        // ===== SALVAR ASSEMBLEIA =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar dados salvos
+            loadFromLocalStorage();
+            
+            // Adicionar primeira pauta
+            addPautaField();
+            
+            // Renderizar calendário
+            renderCalendar();
+            
+            // Renderizar agendamentos
+            renderAgendamentos();
+            
+            // Event listeners para botões do Gantt
+            showHistoryBtn.addEventListener('click', showHistory);
+            
+            // Event listener para o botão de impressão
+            document.getElementById('printBtn').addEventListener('click', printAgendamentosMes);
+            
+            // Event listener para resetar formulário
+            document.getElementById('resetBtn').addEventListener('click', resetForm);
+            
+            // Event listener para adicionar pauta
+            document.getElementById('addPautaBtn').addEventListener('click', () => {
+                addPautaField();
+            });
+            
+            // Event listener para o botão de salvar assembleia
+            document.getElementById('saveAssemblyBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Coletar dados do formulário
+                const condominio = document.getElementById('condominio').value;
+                const data = document.getElementById('data').value;
+                const hora = document.getElementById('hora').value;
+                const evento = document.getElementById('evento').value;
+                const local = document.getElementById('local').value;
+                const tipo = document.getElementById('tipo').value;
+                const responsavel = document.getElementById('responsavel').value;
+                
+                // Coletar pautas
+                const pautaTextareas = document.querySelectorAll('.pauta-item textarea');
+                const pautas = Array.from(pautaTextareas).map(textarea => textarea.value.trim());
+                
+                // Validar campos obrigatórios
+                if (!condominio || !data || !hora || !evento || !local || !tipo || !responsavel) {
+                    showAlert('Atenção', 'Preencha todos os campos obrigatórios!');
+                    return;
+                }
+                
+                // Validar pelo menos uma pauta preenchida
+                if (pautas.length === 0 || pautas.some(p => p === '')) {
+                    showAlert('Atenção', 'Adicione pelo menos uma pauta preenchida!');
+                    return;
+                }
+                
+                // Criar nova assembleia ou atualizar existente
+                if (currentEditId) {
+                    // Atualizar assembleia existente
+                    const index = agenda.findIndex(a => a.id === currentEditId);
+                    if (index !== -1) {
+                        agenda[index] = {
+                            ...agenda[index],
+                            condominio,
+                            data,
+                            hora,
+                            evento,
+                            local,
+                            tipo,
+                            responsavel,
+                            pautas
+                        };
+                        currentGanttIndex = index;
+                    }
+                } else {
+                    // Adicionar nova assembleia
+                    const newAssembly = {
+                        id: generateId(), // ID único
+                        condominio,
+                        data,
+                        hora,
+                        evento,
+                        local,
+                        tipo,
+                        responsavel,
+                        pautas,
+                        phases: JSON.parse(JSON.stringify(initialPhases)),
+                        processHistory: [],
+                        signatures: {}
+                    };
+                    
+                    agenda.push(newAssembly);
+                    currentGanttIndex = agenda.length - 1;
+                }
+
+                // Atualizar Gantt com a nova assembleia
+                renderGantt(agenda[currentGanttIndex]);
+                
+                showAlert('Sucesso', 'Assembleia salva com sucesso!');
+                
+                // Atualizar tabela de agendamentos e calendário
+                renderAgendamentos();
+                renderCalendar();
+                updateDashboardStats();
+                saveToLocalStorage();
+                
+                // Resetar formulário
+                resetForm();
+                currentEditId = null;
+            });
+            
+            // Configurar abas
+            setupTabs();
+        });
+
+        if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+       </script>
+
+<script>
+
+    // ===== OTIMIZAÇÕES PARA MOBILE =====
+    // 1. Detectar modo standalone (app instalado)
+    function isRunningStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches || 
+               window.navigator.standalone ||
+               document.referrer.includes('android-app://');
+    }
+
+    // 2. Verificar conexão (online/offline)
+    function checkConnection() {
+        const status = document.getElementById('connection-status');
+        if (!status) return; // Se não houver elemento, sai da função
+        
+        if (navigator.onLine) {
+            status.textContent = 'Online';
+            status.style.color = 'green';
+        } else {
+            status.textContent = 'Offline - Modo local ativado';
+            status.style.color = 'red';
+        }
+    }
+
+    // 3. Evento de instalação do PWA
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        const installBtn = document.createElement('button');
+        installBtn.textContent = '📲 Instalar App';
+        installBtn.className = 'btn btn-accent';
+        installBtn.style.margin = '10px 0';
+        installBtn.onclick = async () => {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                installBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        };
+        
+        // Adiciona o botão no cabeçalho (header)
+        const header = document.querySelector('header');
+        if (header) {
+            header.appendChild(installBtn);
+        }
+    });
+
+    // 4. Ouvintes de conexão
+    window.addEventListener('online', checkConnection);
+    window.addEventListener('offline', checkConnection);
+
+    // 5. Executa a verificação inicial
+    checkConnection();
+
+    // 6. (Opcional) Mostrar botão "Adicionar à tela inicial"
+    function showAddToHomeScreen() {
+        if (!isRunningStandalone() && deferredPrompt) {
+            const addBtn = document.createElement('button');
+            addBtn.textContent = '➕ Adicionar à tela inicial';
+            addBtn.className = 'btn btn-accent';
+            addBtn.onclick = () => deferredPrompt.prompt();
+            document.querySelector('header').appendChild(addBtn);
+        }
+    }
+
+    // Chame esta função se quiser mostrar o botão automaticamente
+    // showAddToHomeScreen();
+</script>
+
+<script>
+// Verificar se é mobile
+function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Adicionar evento de instalação
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  const installBtn = document.createElement('button');
+  installBtn.textContent = 'Instalar App';
+  installBtn.className = 'btn btn-accent';
+  installBtn.style.margin = '10px 0';
+  installBtn.onclick = () => e.prompt();
+  document.querySelector('header').appendChild(installBtn);
+});
+
+// Notificações
+function requestNotificationPermission() {
+  if ('Notification' in window) {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        console.log('Permissão para notificações concedida');
+      }
+    });
+  }
+}
+
+// Inicialização
+if (isMobile()) {
+  requestNotificationPermission();
+}
+
+// Registrar Service Worker (mantenha o que já tem)
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+<!-- Dentro do <header> ou antes do fechamento </body> -->
+<div id="connection-status" style="
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+"></div>
+<script>
+
+// Máscara para telefone (coloque isto no final do seu arquivo, antes do </body>)
+document.querySelectorAll('input[type="tel"]').forEach(input => {
+    input.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 2) {
+            value = `(${value.substring(0,2)}) ${value.substring(2)}`;
+        }
+        if (value.length > 10) {
+            value = `${value.substring(0,10)}-${value.substring(10,14)}`;
+        }
+        e.target.value = value;
+    });
+});
+</script>
+
+</body>
+
+</html>
