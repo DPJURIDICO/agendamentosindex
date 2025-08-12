@@ -1,242 +1,1768 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Departamento Jurídico - WhatsApp</title>
-  <style>
-    body {
-      font-family: 'Open Sans', sans-serif;
-      margin: 0;
-      background: #f7f9fc;
-      color: #333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp - Departamento Jurídico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #25D366;
+            --primary-dark: #128C7E;
+            --primary-light: #DCF8C6;
+            --background: #f0f2f5;
+            --surface: #ffffff;
+            --border: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --error: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: all 0.2s ease;
+            --gradient-card: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            --gradient-button: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            --gradient-button-hover: linear-gradient(45deg, var(--primary-dark), #107a6e);
+        }
 
-    header {
-      background: linear-gradient(90deg, #2b6cb0, #3182ce);
-      color: white;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    header h1 {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    header h1 i {
-      font-size: 1.5rem;
-    }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-dark);
+        }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
-    }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
 
-    .card {
-      background: white;
-      border-radius: 15px;
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+        .app-header {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 15px 30px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    .card-icon {
-      font-size: 1.5rem;
-    }
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 22px;
+            font-weight: 600;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      margin-top: 1rem;
-    }
+        .app-icon {
+            font-size: 32px;
+        }
 
-    th, td {
-      padding: 0.8rem;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
+        .department-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    th {
-      background: #f0f4f8;
-    }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
 
-    .status-respondida {
-      color: green;
-      font-weight: bold;
-    }
+        .stat-card {
+            background: var(--gradient-card);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .status-pendente {
-      color: orange;
-      font-weight: bold;
-    }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
 
-    .actions button {
-      margin-right: 5px;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+        .stat-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .btn-edit { background: #3182ce; color: white; }
-    .btn-delete { background: #e53e3e; color: white; }
-    .btn-status { background: #38a169; color: white; }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
 
-    form {
-      background: white;
-      padding: 1rem;
-      margin: 1rem;
-      border-radius: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+        .stat-trend {
+            font-size: 14px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-    form input, form textarea, form button {
-      width: 100%;
-      padding: 0.8rem;
-      margin-bottom: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
+        .trend-up {
+            color: var(--success);
+        }
 
-    form button {
-      background: linear-gradient(90deg, #3182ce, #2b6cb0);
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
+        .trend-down {
+            color: var(--error);
+        }
 
-    .float-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #25D366;
-      color: white;
-      font-size: 1.8rem;
-      border: none;
-      padding: 0.8rem 1rem;
-      border-radius: 50%;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-left: auto;
+        }
 
-    @media(max-width: 600px) {
-      .cards {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+        .form-section, .history-section {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--surface);
+            -webkit-appearance: none;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-group .form-control:first-child {
+            flex: 0 0 180px;
+        }
+
+        .input-group .form-control:last-child {
+            flex: 1;
+        }
+
+        select.form-control {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 36px;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--gradient-button);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            background: var(--gradient-button-hover);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-icon {
+            font-size: 18px;
+        }
+
+        .btn-danger {
+            background: var(--error);
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--surface);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-table th {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .history-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-select {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: var(--transition);
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 5px center;
+            background-size: 12px;
+            padding-right: 25px;
+        }
+
+        .status-select.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-select.answered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-button:hover {
+            background-color: #f1f1f1;
+        }
+
+        .edit-button:hover {
+            color: var(--primary);
+        }
+
+        .delete-button:hover {
+            color: var(--error);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-md);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .modal-header i {
+            font-size: 24px;
+        }
+
+        .modal-body {
+            padding: 25px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            padding: 15px 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .modal-cancel {
+            background-color: #f8f9fa;
+            color: var(--text-secondary);
+        }
+
+        .modal-cancel:hover {
+            background-color: #e9ecef;
+        }
+
+        .modal-confirm {
+            background-color: var(--error);
+            color: white;
+        }
+
+        .modal-confirm:hover {
+            background-color: #c82333;
+        }
+
+        .modal-send {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .modal-send:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .export-menu {
+            position: relative;
+        }
+
+        .export-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .export-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .export-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            padding: 10px;
+            width: 250px;
+            z-index: 100;
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+            transform-origin: top right;
+        }
+
+        .export-dropdown.show {
+            display: block;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-primary);
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .export-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .export-option i {
+            width: 24px;
+            text-align: center;
+        }
+
+        .fab-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gradient-button);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .fab-whatsapp:hover {
+            background: var(--gradient-button-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media print {
+            body { background: white; }
+            .form-section, .app-header .export-menu, .fab-whatsapp { display: none !important; }
+            .history-section { box-shadow: none; border: 1px solid #ddd; }
+            .history-table { border: 1px solid #ddd; }
+            .history-table th, .history-table td { border: 1px solid #ddd; font-size: 12px; padding: 8px; }
+            .action-buttons { display: none; }
+        }
+
+        @media (max-width: 992px) {
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .app-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px;
+            }
+            .app-title {
+                margin-bottom: 15px;
+            }
+            .export-menu {
+                align-self: flex-end;
+            }
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .input-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .input-group .form-control:first-child {
+                flex: unset;
+                width: 100%;
+            }
+            .btn {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+            .toast {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: unset;
+            }
+            .fab-whatsapp {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                bottom: 15px;
+                right: 15px;
+            }
+            .modal-content {
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-header {
+                padding: 10px 15px;
+            }
+            .app-title {
+                font-size: 20px;
+            }
+            .app-icon {
+                font-size: 28px;
+            }
+            .department-badge {
+                font-size: 13px;
+                padding: 4px 12px;
+            }
+            .section-title {
+                font-size: 18px;
+            }
+            .stat-value {
+                font-size: 28px;
+            }
+            .history-table th,
+            .history-table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <header class="app-header">
+            <div class="app-title">
+                <i class="fab fa-whatsapp app-icon" aria-label="Ícone do WhatsApp"></i>
+                <div class="department-badge">
+                    <i class="fas fa-gavel" aria-label="Ícone de martelo (gavel)"></i>
+                    Departamento Jurídico
+                </div>
+            </div>
+            <div class="export-menu">
+                <button class="export-toggle" aria-label="Opções de exportação e gerenciamento">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="export-dropdown">
+                    <div class="export-option" id="exportAllOption" role="button" tabindex="0">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Exportar Tudo (PDF)</span>
+                    </div>
+                    <div class="export-option" id="exportPeriodOption" role="button" tabindex="0">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Exportar Período (PDF)</span>
+                    </div>
+                    <div class="export-option" id="exportCsvOption" role="button" tabindex="0">
+                        <i class="fas fa-file-csv"></i>
+                        <span>Exportar Tudo (CSV)</span>
+                    </div>
+                    <div class="export-option" id="deletePeriodOption" role="button" tabindex="0">
+                        <i class="fas fa-eraser"></i>
+                        <span>Apagar por Período</span>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-<header>
-  <h1><i>⚖️</i> Departamento Jurídico</h1>
-  <div>
-    <button onclick="exportarPDF()">📄 Exportar PDF</button>
-    <button onclick="abrirModalExclusao()">🗑 Apagar por Período</button>
-  </div>
-</header>
+        <section class="dashboard">
+            <div class="stat-card">
+                <div class="stat-title">
+                    <i class="fas fa-paper-plane"></i>
+                    Mensagens Enviadas
+                </div>
+                <div class="stat-value" id="totalMessages">100%</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i> <span id="sentTrend">Atual</span>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-share"></i>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">
+                    <i class="fas fa-check-circle"></i>
+                    Mensagens Respondidas
+                </div>
+                <div class="stat-value" id="answeredMessages">0%</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i> <span id="answeredTrend">Atual</span>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">
+                    <i class="fas fa-clock"></i>
+                    Aguardando Resposta
+                </div>
+                <div class="stat-value" id="pendingMessages">0%</div>
+                <div class="stat-trend trend-down">
+                    <i class="fas fa-arrow-down"></i> <span id="pendingTrend">Atual</span>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">
+                    <i class="fas fa-percentage"></i>
+                    Taxa de Resposta
+                </div>
+                <div class="stat-value" id="responseRate">0%</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i> <span id="rateTrend">Atual</span>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+        </section>
 
-<section class="cards">
-  <div class="card">
-    <div>
-      <strong>Total Mensagens</strong>
-      <p id="totalMensagens">0</p>
+        <section class="form-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-paper-plane"></i>
+                    Nova Mensagem
+                </h2>
+            </div>
+            
+            <div class="form-group">
+                <label for="countryCode" class="form-label">Código do País</label>
+                <div class="input-group">
+                    <select id="countryCode" class="form-control">
+                        <option value="55" selected>🇧🇷 Brasil (+55)</option>
+                    </select>
+                    <input type="tel" id="phoneNumber" class="form-control" placeholder="Número com DDD" inputmode="numeric" aria-label="Número de telefone com DDD">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="message" class="form-label">Mensagem (opcional)</label>
+                <textarea id="message" class="form-control" placeholder="Digite sua mensagem aqui..." aria-label="Campo para digitar a mensagem"></textarea>
+            </div>
+            
+            <button id="sendButton" class="btn">
+                <i class="fab fa-whatsapp btn-icon"></i>
+                Enviar Mensagem
+            </button>
+        </section>
+
+        <section class="history-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Histórico de Mensagens
+                </h2>
+                <div class="history-actions">
+                    <button id="deleteAllButton" class="btn btn-danger" aria-label="Apagar todas as mensagens">
+                        <i class="fas fa-trash"></i> Apagar Tudo
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Telefone</th>
+                            <th>Mensagem</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
-    <div class="card-icon">💬</div>
-  </div>
-  <div class="card">
-    <div>
-      <strong>Respondidas</strong>
-      <p id="mensagensRespondidas">0</p>
+
+    <div id="toast" class="toast" role="alert" aria-live="polite">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Mensagem enviada com sucesso!</span>
     </div>
-    <div class="card-icon">✅</div>
-  </div>
-  <div class="card">
-    <div>
-      <strong>Pendentes</strong>
-      <p id="mensagensPendentes">0</p>
+
+    <div id="confirmationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalHeader">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3 id="modalHeader">Confirmação</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Tem certeza que deseja excluir esta mensagem do histórico?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-cancel" id="modalCancel">Cancelar</button>
+                <button class="modal-btn modal-confirm" id="modalConfirm">Confirmar</button>
+            </div>
+        </div>
     </div>
-    <div class="card-icon">⏳</div>
-  </div>
-</section>
 
-<section style="padding: 1rem;">
-  <table>
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>Hora</th>
-        <th>Telefone</th>
-        <th>Mensagem</th>
-        <th>Status</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody id="tabelaMensagens">
-      <tr>
-        <td>12/08/2025</td>
-        <td>14:30</td>
-        <td>(11) 99999-9999</td>
-        <td>Exemplo de mensagem</td>
-        <td class="status-pendente">Pendente</td>
-        <td class="actions">
-          <button class="btn-edit">Editar</button>
-          <button class="btn-delete">Excluir</button>
-          <button class="btn-status">Verificar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</section>
+    <div id="sendConfirmationModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fab fa-whatsapp"></i>
+                <h3>Confirmar Envio</h3>
+            </div>
+            <div class="modal-body">
+                <p>Deseja enviar a mensagem para:</p>
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <div><strong>Telefone:</strong> <span id="confirmPhone"></span></div>
+                    <div style="margin-top: 10px;"><strong>Mensagem:</strong></div>
+                    <div style="background-color: white; padding: 10px; border-radius: 5px; margin-top: 5px; border-left: 3px solid var(--primary);"><span id="confirmMessage"></span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-cancel" id="sendModalCancel">Cancelar</button>
+                <button class="modal-btn modal-send" id="sendModalConfirm">Enviar Agora</button>
+            </div>
+        </div>
+    </div>
 
-<section>
-  <form onsubmit="enviarMensagem(event)">
-    <input type="tel" placeholder="(XX) XXXXX-XXXX" required />
-    <textarea placeholder="Digite sua mensagem..." rows="4" required></textarea>
-    <button type="submit">Enviar Mensagem</button>
-  </form>
-</section>
+    <div id="deletePeriodModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-eraser"></i>
+                <h3>Apagar Mensagens por Período</h3>
+            </div>
+            <div class="modal-body">
+                <p>Selecione o período para apagar as mensagens:</p>
+                <div class="form-group">
+                    <label for="startDate" class="form-label">Data Inicial:</label>
+                    <input type="date" id="startDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="endDate" class="form-label">Data Final:</label>
+                    <input type="date" id="endDate" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-cancel" id="deletePeriodCancel">Cancelar</button>
+                <button class="modal-btn modal-confirm" id="deletePeriodConfirm">Apagar</button>
+            </div>
+        </div>
+    </div>
 
-<button class="float-btn" onclick="abrirFormulario()">💬</button>
+    <div id="exportPeriodModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-file-pdf"></i>
+                <h3>Exportar Período para PDF</h3>
+            </div>
+            <div class="modal-body">
+                <p>Selecione o período para exportar:</p>
+                <div class="form-group">
+                    <label for="exportStartDate" class="form-label">Data Inicial:</label>
+                    <input type="date" id="exportStartDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="exportEndDate" class="form-label">Data Final:</label>
+                    <input type="date" id="exportEndDate" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-cancel" id="exportPeriodCancel">Cancelar</button>
+                <button class="modal-btn modal-send" id="exportPeriodConfirm">Exportar PDF</button>
+            </div>
+        </div>
+    </div>
 
-<script>
-  function enviarMensagem(event) {
-    event.preventDefault();
-    alert("Aqui chamaria o backend para enviar via WhatsApp");
-    // Exemplo de requisição para backend:
-    /*
-    fetch('/api/enviar', {
-      method: 'POST',
-      body: JSON.stringify({ telefone, mensagem }),
-      headers: { 'Content-Type': 'application/json' }
-    }).then(...)
-    */
-  }
+    <button class="fab-whatsapp" id="fabWhatsapp" title="Enviar Nova Mensagem" aria-label="Botão flutuante para enviar nova mensagem">
+        <i class="fab fa-whatsapp"></i>
+    </button>
 
-  function exportarPDF() {
-    alert("Aqui será exportado para PDF via biblioteca JS (ex: jsPDF)");
-  }
+    <script>
+        let messageHistory = [];
+        let editingMessageId = null;
 
-  function abrirModalExclusao() {
-    alert("Aqui abriria modal para escolher período e excluir mensagens");
-  }
+        const sendButton = document.getElementById('sendButton');
+        const phoneInput = document.getElementById('phoneNumber');
+        const messageInput = document.getElementById('message');
+        const countryCodeSelect = document.getElementById('countryCode');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const historyTableBody = document.getElementById('historyTableBody');
+        const exportToggle = document.querySelector('.export-toggle');
+        const exportDropdown = document.querySelector('.export-dropdown');
+        const exportAllOption = document.getElementById('exportAllOption');
+        const exportPeriodOption = document.getElementById('exportPeriodOption');
+        const exportCsvOption = document.getElementById('exportCsvOption');
+        const deletePeriodOption = document.getElementById('deletePeriodOption');
+        const deleteAllButton = document.getElementById('deleteAllButton');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalCancel = document.getElementById('modalCancel');
+        const modalConfirm = document.getElementById('modalConfirm');
+        const sendConfirmationModal = document.getElementById('sendConfirmationModal');
+        const confirmPhone = document.getElementById('confirmPhone');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const sendModalCancel = document.getElementById('sendModalCancel');
+        const sendModalConfirm = document.getElementById('sendModalConfirm');
+        const deletePeriodModal = document.getElementById('deletePeriodModal');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const deletePeriodCancel = document.getElementById('deletePeriodCancel');
+        const deletePeriodConfirm = document.getElementById('deletePeriodConfirm');
+        const exportPeriodModal = document.getElementById('exportPeriodModal');
+        const exportStartDateInput = document.getElementById('exportStartDate');
+        const exportEndDateInput = document.getElementById('exportEndDate');
+        const exportPeriodCancel = document.getElementById('exportPeriodCancel');
+        const exportPeriodConfirmBtn = document.getElementById('exportPeriodConfirm');
+        const fabWhatsapp = document.getElementById('fabWhatsapp');
 
-  function abrirFormulario() {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  }
-</script>
+        const totalMessagesEl = document.getElementById('totalMessages');
+        const answeredMessagesEl = document.getElementById('answeredMessages');
+        const pendingMessagesEl = document.getElementById('pendingMessages');
+        const responseRateEl = document.getElementById('responseRate');
+        const sentTrendEl = document.getElementById('sentTrend');
+        const answeredTrendEl = document.getElementById('answeredTrend');
+        const pendingTrendEl = document.getElementById('pendingTrend');
+        const rateTrendEl = document.getElementById('rateTrend');
 
+        let currentActionCallback = null;
+
+        function loadDataFromStorage() {
+            const stored = localStorage.getItem('whatsappMessages');
+            if (stored) {
+                messageHistory = JSON.parse(stored);
+            }
+        }
+
+        function saveDataToStorage() {
+            localStorage.setItem('whatsappMessages', JSON.stringify(messageHistory));
+        }
+
+        function renderHistoryTable() {
+            historyTableBody.innerHTML = '';
+            
+            const sortedHistory = [...messageHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            sortedHistory.forEach(item => {
+                const row = document.createElement('tr');
+                
+                const dateObj = new Date(item.timestamp);
+                const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                const formattedTime = dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                
+                const formattedPhone = `+${item.countryCode} ${item.phoneNumber}`;
+                
+                const truncatedMessage = item.message && item.message.length > 50 ? 
+                    item.message.substring(0, 50) + '...' : (item.message || 'Sem mensagem');
+                
+                const statusOptions = `
+                    <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Não respondida</option>
+                    <option value="answered" ${item.status === 'answered' ? 'selected' : ''}>Respondida</option>
+                `;
+                
+                row.innerHTML = `
+                    <td>
+                        <div>${formattedDate}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">${formattedTime}</div>
+                    </td>
+                    <td>${formattedPhone}</td>
+                    <td title="${item.message || 'Sem mensagem'}">${truncatedMessage}</td>
+                    <td>
+                        <select class="status-select ${item.status}" data-id="${item.id}" aria-label="Alterar status da mensagem">
+                            ${statusOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-button edit-button" data-id="${item.id}" title="Editar mensagem" aria-label="Editar mensagem">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="action-button delete-button" data-id="${item.id}" title="Excluir mensagem" aria-label="Excluir mensagem">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                historyTableBody.appendChild(row);
+            });
+            
+            document.querySelectorAll('.edit-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                    editMessage(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                    showConfirmationModal(`Tem certeza que deseja excluir esta mensagem do histórico?`, () => {
+                        deleteMessage(id);
+                    });
+                });
+            });
+            
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    const newStatus = e.target.value;
+                    updateMessageStatus(id, newStatus);
+                    
+                    e.target.classList.remove('pending', 'answered');
+                    e.target.classList.add(newStatus);
+                });
+            });
+        }
+
+        function showToast(message, duration = 3000) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        function showConfirmationModal(message, callback) {
+            modalMessage.textContent = message;
+            confirmationModal.classList.add('show');
+            currentActionCallback = callback;
+            
+            modalCancel.onclick = hideConfirmationModal;
+            modalConfirm.onclick = confirmCurrentAction;
+        }
+
+        function hideConfirmationModal() {
+            confirmationModal.classList.remove('show');
+            currentActionCallback = null;
+        }
+
+        function confirmCurrentAction() {
+            if (currentActionCallback) {
+                currentActionCallback();
+            }
+            hideConfirmationModal();
+        }
+
+        function showSendConfirmationModal() {
+            const countryCode = countryCodeSelect.value;
+            let phoneNumber = phoneInput.value.replace(/\D/g, '');
+            const message = messageInput.value.trim();
+
+            if (!phoneNumber) {
+                showToast('Por favor, insira um número válido.');
+                phoneInput.focus();
+                return;
+            }
+            
+            if (phoneNumber.length < 10) {
+                showToast('Número muito curto. Inclua o DDD.');
+                phoneInput.focus();
+                return;
+            }
+
+            let formattedPhone = `+${countryCode} `;
+            if (countryCode === '55' && phoneNumber.length >= 10) {
+                if (phoneNumber.length === 11) {
+                    formattedPhone += `(${phoneNumber.substring(0,2)}) ${phoneNumber.substring(2,7)}-${phoneNumber.substring(7)}`;
+                } else if (phoneNumber.length === 10) {
+                    formattedPhone += `(${phoneNumber.substring(0,2)}) ${phoneNumber.substring(2,6)}-${phoneNumber.substring(6)}`;
+                }
+            } else {
+                formattedPhone += phoneNumber;
+            }
+
+            confirmPhone.textContent = formattedPhone;
+            confirmMessage.textContent = message || 'Nenhuma mensagem (apenas abrir conversa)';
+            
+            sendConfirmationModal.classList.add('show');
+            
+            sendModalCancel.onclick = hideSendConfirmationModal;
+            sendModalConfirm.onclick = confirmSendMessage;
+        }
+
+        function hideSendConfirmationModal() {
+            sendConfirmationModal.classList.remove('show');
+        }
+
+        function confirmSendMessage() {
+            hideSendConfirmationModal();
+            if (editingMessageId) {
+                updateAndResendMessage(editingMessageId);
+            } else {
+                executeWhatsAppSend();
+            }
+        }
+
+        function showDeletePeriodModal() {
+            deletePeriodModal.classList.add('show');
+            startDateInput.value = '';
+            endDateInput.value = '';
+
+            deletePeriodCancel.onclick = hideDeletePeriodModal;
+            deletePeriodConfirm.onclick = deleteMessagesByPeriod;
+        }
+
+        function hideDeletePeriodModal() {
+            deletePeriodModal.classList.remove('show');
+        }
+
+        function showExportPeriodModal() {
+            exportPeriodModal.classList.add('show');
+            exportStartDateInput.value = '';
+            exportEndDateInput.value = '';
+
+            exportPeriodCancel.onclick = hideExportPeriodModal;
+            exportPeriodConfirmBtn.onclick = exportPeriodToPDF;
+        }
+
+        function hideExportPeriodModal() {
+            exportPeriodModal.classList.remove('show');
+        }
+
+        function updateMessageStatus(id, status) {
+            const messageIndex = messageHistory.findIndex(item => item.id === id);
+            if (messageIndex !== -1) {
+                messageHistory[messageIndex].status = status;
+                saveDataToStorage();
+                updateStats();
+                showToast('Status atualizado com sucesso!');
+            }
+        }
+
+        function checkForDuplicates(countryCode, phoneNumber, message) {
+            const now = new Date();
+            const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+            
+            return messageHistory.some(item => {
+                const itemDate = new Date(item.timestamp);
+                return item.countryCode === countryCode &&
+                       item.phoneNumber.replace(/\D/g, '') === phoneNumber.replace(/\D/g, '') &&
+                       item.message === message &&
+                       itemDate > fiveMinutesAgo;
+            });
+        }
+
+        function executeWhatsAppSend() {
+            const countryCode = countryCodeSelect.value;
+            let phoneNumber = phoneInput.value;
+            const message = messageInput.value.trim();
+            
+            phoneNumber = phoneNumber.replace(/\D/g, '');
+            
+            if (checkForDuplicates(countryCode, phoneNumber, message)) {
+                showToast('Mensagem similar enviada recentemente. Aguarde 5 minutos para evitar duplicação.');
+                return;
+            }
+            
+            let formattedPhoneForHistory = phoneNumber;
+            if (countryCode === '55' && phoneNumber.length >= 10) {
+                if (phoneNumber.length === 11) {
+                    formattedPhoneForHistory = `(${phoneNumber.substring(0,2)}) ${phoneNumber.substring(2,7)}-${phoneNumber.substring(7)}`;
+                } else if (phoneNumber.length === 10) {
+                    formattedPhoneForHistory = `(${phoneNumber.substring(0,2)}) ${phoneNumber.substring(2,6)}-${phoneNumber.substring(6)}`;
+                }
+            }
+            
+            // URL com mensagem encodada para garantir que caracteres especiais funcionem
+            let url = `https://wa.me/${countryCode}${phoneNumber}`;
+            if (message && message.length > 0) {
+                // Encoding mais robusto da mensagem
+                const encodedMessage = encodeURIComponent(message);
+                url += `?text=${encodedMessage}`;
+            }
+            
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin btn-icon"></i> Preparando...';
+            sendButton.disabled = true;
+            
+            setTimeout(() => {
+                // Abrir o WhatsApp em nova aba
+                window.open(url, '_blank', 'noopener,noreferrer');
+                
+                const newMessage = {
+                    id: Date.now(),
+                    countryCode,
+                    phoneNumber: formattedPhoneForHistory,
+                    message: message || '',
+                    status: 'pending',
+                    timestamp: new Date().toISOString()
+                };
+                
+                messageHistory.unshift(newMessage);
+                saveDataToStorage();
+                renderHistoryTable();
+                updateStats();
+                
+                phoneInput.value = '';
+                messageInput.value = '';
+                countryCodeSelect.value = '55';
+                
+                sendButton.innerHTML = '<i class="fab fa-whatsapp btn-icon"></i> Mensagem Enviada!';
+                setTimeout(() => {
+                    sendButton.innerHTML = '<i class="fab fa-whatsapp btn-icon"></i> Enviar Mensagem';
+                    sendButton.disabled = false;
+                }, 2000);
+                
+                showToast('Mensagem enviada com sucesso!');
+            }, 800);
+        }
+
+        function sendWhatsAppMessage() {
+            showSendConfirmationModal();
+        }
+
+        function editMessage(id) {
+            const message = messageHistory.find(item => item.id === id);
+            if (!message) return;
+            
+            editingMessageId = id;
+            countryCodeSelect.value = message.countryCode;
+            phoneInput.value = message.phoneNumber.replace(/\D/g, ''); 
+            messageInput.value = message.message;
+            
+            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+            
+            sendButton.innerHTML = '<i class="fas fa-sync-alt btn-icon"></i> Atualizar e Reenviar';
+            
+            showToast('Mensagem carregada para edição!');
+        }
+
+        function updateAndResendMessage(id) {
+            const messageIndex = messageHistory.findIndex(item => item.id === id);
+            if (messageIndex === -1) return;
+            
+            const countryCode = countryCodeSelect.value;
+            let phoneNumber = phoneInput.value;
+            const newMessageContent = messageInput.value.trim();
+            
+            phoneNumber = phoneNumber.replace(/\D/g, '');
+            
+            let formattedPhoneForHistory = phoneNumber;
+            if (countryCode === '55' && phoneNumber.length >= 10) {
+                if (phoneNumber.length === 11) {
+                    formattedPhoneForHistory = `(${phoneNumber.substring(0,2)}) ${phoneNumber.substring(2,7)}-${phoneNumber.substring(7)}`;
+                } else if (phoneNumber.length === 10) {
+                    formattedPhoneForHistory = `(${phoneNumber.substring(0,2)}) ${phoneNumber.substring(2,6)}-${phoneNumber.substring(6)}`;
+                }
+            }
+            
+            messageHistory[messageIndex] = {
+                ...messageHistory[messageIndex],
+                countryCode,
+                phoneNumber: formattedPhoneForHistory,
+                message: newMessageContent,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+            
+            let url = `https://wa.me/${countryCode}${phoneNumber}`;
+            if (newMessageContent && newMessageContent.length > 0) {
+                const encodedMessage = encodeURIComponent(newMessageContent);
+                url += `?text=${encodedMessage}`;
+            }
+            
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin btn-icon"></i> Atualizando...';
+            sendButton.disabled = true;
+            
+            setTimeout(() => {
+                window.open(url, '_blank', 'noopener,noreferrer');
+                
+                saveDataToStorage();
+                renderHistoryTable();
+                updateStats();
+                
+                phoneInput.value = '';
+                messageInput.value = '';
+                countryCodeSelect.value = '55';
+                editingMessageId = null;
+
+                sendButton.innerHTML = '<i class="fas fa-check-circle btn-icon"></i> Atualizado!';
+                setTimeout(() => {
+                    sendButton.innerHTML = '<i class="fab fa-whatsapp btn-icon"></i> Enviar Mensagem';
+                    sendButton.disabled = false;
+                }, 2000);
+                
+                showToast('Mensagem atualizada e reenviada!');
+            }, 800);
+        }
+
+        function deleteMessage(id) {
+            messageHistory = messageHistory.filter(item => item.id !== id);
+            saveDataToStorage();
+            renderHistoryTable();
+            updateStats();
+            showToast('Mensagem excluída do histórico!');
+        }
+
+        function deleteAllMessages() {
+            showConfirmationModal('Tem certeza que deseja excluir TODAS as mensagens do histórico?', () => {
+                messageHistory = [];
+                saveDataToStorage();
+                renderHistoryTable();
+                updateStats();
+                showToast('Todas as mensagens foram excluídas!');
+            });
+        }
+
+        function deleteMessagesByPeriod() {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (!startDate || !endDate) {
+                showToast('Por favor, selecione as datas inicial e final.');
+                return;
+            }
+
+            const start = new Date(startDate + 'T00:00:00');
+            const end = new Date(endDate + 'T23:59:59');
+
+            if (start > end) {
+                showToast('A data inicial não pode ser posterior à data final.');
+                return;
+            }
+
+            const initialCount = messageHistory.length;
+            messageHistory = messageHistory.filter(item => {
+                const itemDate = new Date(item.timestamp);
+                return itemDate < start || itemDate > end;
+            });
+
+            const deletedCount = initialCount - messageHistory.length;
+
+            saveDataToStorage();
+            renderHistoryTable();
+            updateStats();
+            hideDeletePeriodModal();
+            showToast(`${deletedCount} mensagens foram excluídas do histórico.`);
+        }
+
+        function exportPeriodToPDF() {
+            const startDate = exportStartDateInput.value;
+            const endDate = exportEndDateInput.value;
+
+            if (!startDate || !endDate) {
+                showToast('Por favor, selecione as datas inicial e final.');
+                return;
+            }
+
+            const start = new Date(startDate + 'T00:00:00');
+            const end = new Date(endDate + 'T23:59:59');
+
+            if (start > end) {
+                showToast('A data inicial não pode ser posterior à data final.');
+                return;
+            }
+
+            const filteredHistory = messageHistory.filter(item => {
+                const itemDate = new Date(item.timestamp);
+                return itemDate >= start && itemDate <= end;
+            });
+
+            if (filteredHistory.length === 0) {
+                showToast('Nenhuma mensagem encontrada no período selecionado.');
+                return;
+            }
+
+            hideExportPeriodModal();
+            exportToPDF(false, filteredHistory);
+        }
+
+        function exportToPDF(all = true, filteredData = null) {
+            const pdfContainer = document.createElement('div');
+            pdfContainer.style.cssText = `
+                position: absolute;
+                left: -9999px;
+                width: 210mm;
+                padding: 20mm;
+                background: white;
+                font-family: 'Open Sans', Arial, sans-serif;
+                font-size: 12px;
+                line-height: 1.4;
+                color: #333;
+            `;
+            
+            const header = document.createElement('div');
+            header.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #128C7E; padding-bottom: 20px;">
+                    <h1 style="margin: 0; color: #128C7E; font-size: 24px; font-weight: bold;">Relatório de Mensagens WhatsApp</h1>
+                    <div style="background: #DCF8C6; padding: 8px 20px; border-radius: 20px; display: inline-block; margin-top: 10px; font-size: 14px; font-weight: 500;">
+                        Departamento Jurídico
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px; font-size: 11px; color: #666;">
+                    <div><strong>Data de Exportação:</strong> ${new Date().toLocaleDateString('pt-BR')}</div>
+                    <div><strong>Total de Registros:</strong> ${filteredData ? filteredData.length : messageHistory.length}</div>
+                </div>
+            `;
+            pdfContainer.appendChild(header);
+            
+            const table = document.createElement('table');
+            table.style.cssText = `
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+                font-size: 10px;
+            `;
+            
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr style="background-color: #128C7E; color: white;">
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ccc; width: 15%;">Data/Hora</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ccc; width: 20%;">Telefone</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ccc; width: 50%;">Mensagem</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ccc; width: 15%;">Status</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            const tbody = document.createElement('tbody');
+            
+            const dataToExport = filteredData || [...messageHistory];
+            dataToExport.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            dataToExport.forEach((item, index) => {
+                const row = document.createElement('tr');
+                
+                const dateObj = new Date(item.timestamp);
+                const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                const formattedTime = dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                
+                const formattedPhone = `+${item.countryCode} ${item.phoneNumber}`;
+                
+                const statusText = item.status === 'answered' ? 'Respondida' : 'Não Respondida';
+                const backgroundColor = index % 2 === 0 ? '#f9f9f9' : 'white';
+                
+                row.style.backgroundColor = backgroundColor;
+                row.innerHTML = `
+                   <td style="padding: 6px; border: 1px solid #ddd; vertical-align: top;">
+    <div style="font-weight: bold;">${formattedDate}</div>
+    <div style="font-size: 9px; color: #666;">${formattedTime}</div>
+</td>
+<td style="padding: 6px; border: 1px solid #ddd; vertical-align: top;">
+    ${formattedPhone}
+</td>
+<td style="padding: 6px; border: 1px solid #ddd; vertical-align: top; word-wrap: break-word;">
+    ${item.message || 'Sem mensagem'}
+</td>
+<td style="padding: 6px; border: 1px solid #ddd; vertical-align: top;">
+    <span style="display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 9px; font-weight: bold; 
+                 background-color: ${item.status === 'answered' ? '#d4edda' : '#fff3cd'}; 
+                 color: ${item.status === 'answered' ? '#155724' : '#856404'};">
+        ${statusText}
+    </span>
+</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            table.appendChild(tbody);
+            pdfContainer.appendChild(table);
+            
+            const statsSection = document.createElement('div');
+            statsSection.style.cssText = `
+                margin-top: 25px;
+                padding: 15px;
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+            `;
+            
+            const totalMessages = dataToExport.length;
+            const answeredMessages = dataToExport.filter(item => item.status === 'answered').length;
+            const pendingMessages = totalMessages - answeredMessages;
+            const responseRate = totalMessages > 0 ? Math.round((answeredMessages / totalMessages) * 100) : 0;
+            
+            statsSection.innerHTML = `
+                <h3 style="margin: 0 0 15px 0; color: #128C7E; font-size: 14px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">Estatísticas do Relatório</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 11px;">
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 5px;">
+                        <div style="color: #666; margin-bottom: 5px;">Total de Mensagens</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #128C7E;">${totalMessages}</div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 5px;">
+                      <div style="color: #666; margin-bottom: 5px;">Mensagens Respondidas</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #28a745;">${answeredMessages}</div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 5px;">
+                        <div style="color: #666; margin-bottom: 5px;">Aguardando Resposta</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #ffc107;">${pendingMessages}</div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 5px;">
+                        <div style="color: #666; margin-bottom: 5px;">Taxa de Resposta</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #128C7E;">${responseRate}%</div>
+                    </div>
+                </div>
+            `;
+            pdfContainer.appendChild(statsSection);
+            
+            const footer = document.createElement('div');
+            footer.style.cssText = `
+                margin-top: 20px;
+                padding-top: 15px;
+                border-top: 1px solid #ddd;
+                text-align: center;
+                color: #666;
+                font-size: 10px;
+            `;
+            footer.innerHTML = `
+                <div>Relatório gerado automaticamente pelo Sistema WhatsApp - Departamento Jurídico</div>
+                <div style="margin-top: 5px;">${new Date().toLocaleString('pt-BR')}</div>
+            `;
+            pdfContainer.appendChild(footer);
+            
+            document.body.appendChild(pdfContainer);
+            
+            html2canvas(pdfContainer, { 
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                let position = 0;
+                let heightLeft = pdfHeight;
+
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - pdfHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= pdf.internal.pageSize.getHeight();
+                }
+
+                const fileName = `relatorio_whatsapp_${new Date().toISOString().slice(0,10)}.pdf`;
+                pdf.save(fileName);
+                
+                document.body.removeChild(pdfContainer);
+                showToast('PDF gerado com sucesso!');
+            }).catch(error => {
+                console.error("Erro ao gerar PDF:", error);
+                showToast('Erro ao gerar PDF. Tente novamente.');
+                if (pdfContainer.parentNode) {
+                    document.body.removeChild(pdfContainer);
+                }
+            });
+        }
+
+        function exportToCSV() {
+            let csvContent = "Data,Hora,Telefone,Mensagem,Status\n";
+            
+            messageHistory.forEach(item => {
+                const dateObj = new Date(item.timestamp);
+                const date = dateObj.toLocaleDateString('pt-BR');
+                const time = dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                const status = item.status === 'answered' ? 'Respondida' : 'Não respondida';
+                
+                const escapedMessage = (item.message || '').replace(/"/g, '""');
+                
+                csvContent += `"${date}","${time}","${item.phoneNumber}","${escapedMessage}","${status}"\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            const fileName = `historico_whatsapp_${new Date().toISOString().slice(0,10)}.csv`;
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", fileName);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast(`Exportado ${messageHistory.length} mensagens em CSV!`);
+        }
+
+        function updateStats() {
+            const totalMessages = messageHistory.length;
+            const answeredMessages = messageHistory.filter(item => item.status === 'answered').length;
+            const pendingMessages = totalMessages - answeredMessages;
+            
+            // Calcular percentuais baseados no total
+            const answeredPercentage = totalMessages > 0 ? Math.round((answeredMessages / totalMessages) * 100) : 0;
+            const pendingPercentage = totalMessages > 0 ? Math.round((pendingMessages / totalMessages) * 100) : 0;
+            const responseRate = answeredPercentage;
+            
+            // Atualizar os valores com percentuais
+            totalMessagesEl.textContent = totalMessages > 0 ? '100%' : '0%';
+            answeredMessagesEl.textContent = `${answeredPercentage}%`;
+            pendingMessagesEl.textContent = `${pendingPercentage}%`;
+            responseRateEl.textContent = `${responseRate}%`;
+            
+            // Manter o texto "Atual" como solicitado
+            sentTrendEl.textContent = 'Atual';
+            answeredTrendEl.textContent = 'Atual';
+            pendingTrendEl.textContent = 'Atual';
+            rateTrendEl.textContent = 'Atual';
+        }
+
+        function initApp() {
+            loadDataFromStorage();
+            renderHistoryTable();
+            updateStats();
+            
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('pt-BR');
+            messageInput.placeholder = `Ex: Prezado cliente, conforme conversa em ${formattedDate}, seu processo...`;
+            
+            sendButton.addEventListener('click', sendWhatsAppMessage);
+            deleteAllButton.addEventListener('click', deleteAllMessages);
+            fabWhatsapp.addEventListener('click', () => {
+                document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+                phoneInput.focus();
+            });
+
+            exportToggle.addEventListener('click', () => {
+                exportDropdown.classList.toggle('show');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!exportToggle.contains(e.target) && !exportDropdown.contains(e.target)) {
+                    exportDropdown.classList.remove('show');
+                }
+            });
+            
+            exportAllOption.addEventListener('click', () => {
+                exportDropdown.classList.remove('show');
+                exportToPDF(true);
+            });
+            
+            exportPeriodOption.addEventListener('click', () => {
+                exportDropdown.classList.remove('show');
+                showExportPeriodModal();
+            });
+            
+            exportCsvOption.addEventListener('click', () => {
+                exportDropdown.classList.remove('show');
+                exportToCSV();
+            });
+
+            deletePeriodOption.addEventListener('click', () => {
+                exportDropdown.classList.remove('show');
+                showDeletePeriodModal();
+            });
+            
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                
+                if (countryCodeSelect.value === '55') {
+                    if (value.length > 2) {
+                        value = `(${value.substring(0,2)}) ${value.substring(2)}`;
+                    }
+                    if (value.length > 9) {
+                        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                    } else if (value.length > 8) {
+                        value = value.replace(/(\d{4})(\d)/, '$1-$2');
+                    }
+                }
+                e.target.value = value;
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    hideConfirmationModal();
+                    hideSendConfirmationModal();
+                    hideDeletePeriodModal();
+                    hideExportPeriodModal();
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', initApp);
+        
+        window.addEventListener('beforeunload', () => {
+            saveDataToStorage();
+        });
+    </script>
 </body>
 </html>
+
+
+
+
+
